@@ -1,18 +1,14 @@
 module AuthenticationHelper
   extend ActiveSupport::Concern
 
-  included do
-    before_action :authenticate_account
-  end
-
   def authenticate_account
-    unless valid_authentication?
-      render json: Loconav::Response::Builder.failure(errors: ["Authentication failed"])
+    unless valid_token?
+      render json: Loconav::Response::Builder.failure(errors: ["Authentication failed"]), status: :unauthorized
     end
   end
 
-  def valid_authentication?
-    return false unless request.headers['User-Authentication'].present?
+  def valid_token?
+    return false unless auth_token.present?
     !!current_account
   end
 
@@ -21,6 +17,6 @@ module AuthenticationHelper
   end
 
   def auth_token
-    request.headers['User-Authentication']
+    request.headers[HEADER_USER_AUTHENTICATION]
   end
 end

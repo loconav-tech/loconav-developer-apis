@@ -1,12 +1,13 @@
 module Linehaul
   class DriverService
+    class ActionFailed < StandardError; end
+
     include ResponseHelper
 
     FETCH_DRIVER_URL = LINEHAUL_BASE_URL + "/api/v5/drivers"
+    DEFAULT_ERROR_MSG = "Error fetching data for driver".freeze
 
     attr_accessor :auth_token
-
-    class ActionFailed < StandardError; end
 
     def initialize(auth_token)
       self.auth_token = auth_token
@@ -23,7 +24,7 @@ module Linehaul
         connecttimeout: CONNECTION_TIMEOUT,
         method: :get,
       ).run
-      respond(response)
+      respond(response, ActionFailed, DEFAULT_ERROR_MSG)
     end
   end
 end

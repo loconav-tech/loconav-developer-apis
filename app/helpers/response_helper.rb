@@ -1,17 +1,17 @@
 module ResponseHelper
 
-  def respond(response)
+  def respond(response, klass, error_message)
     if response && response.body.present?
       response_data = JSON.parse(response.body)
-      raise_error(response_data) unless response.success?
+      raise_error(response_data, klass) unless response.success?
       response_data
     else
-      raise StandardError, DEFAULT_ERROR_MSG
+      raise klass, error_message
     end
   end
 
-  def raise_error(response_data)
+  def raise_error(response_data, klcass)
     error_msg = response_data.dig("error") || response_data.dig("data", "errors", 0, "message")
-    raise StandardError, error_msg
+    raise klcass, error_msg
   end
 end

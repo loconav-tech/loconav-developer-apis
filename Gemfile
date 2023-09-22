@@ -13,9 +13,19 @@ gem "rswag"
 
 group :development, :test do
   gem "debug", platforms: %i[mri mingw x64_mingw]
-  gem 'web-console', '>= 4.1.0'
+  gem "dotenv-rails"
+  gem "rspec-rails", "~> 5.1.2"
   gem 'listen', '~> 3.3'
   gem 'spring'
+  gem "factory_bot_rails"
+end
+
+group :development do
+  gem 'web-console', '>= 4.1.0'
+  gem "rubocop", require: false
+  gem "rubocop-performance", require: false
+  gem "rubocop-rails", require: false
+  gem "rubocop-rspec", require: false
 end
 
 source "https://rubygems.pkg.github.com/loconav-tech" do

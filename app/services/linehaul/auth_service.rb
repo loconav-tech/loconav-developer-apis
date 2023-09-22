@@ -1,7 +1,9 @@
 module Linehaul
   class AuthService
     include ResponseHelper
+    class InvalidAuth < StandardError; end
 
+    INVALID_AUTH_ERROR_MSG = "Authentication Failed"
     USER_DETAILS_URL = LINEHAUL_BASE_URL + "/api/v5/partner/user_details"
 
     attr_accessor :auth_token
@@ -14,13 +16,13 @@ module Linehaul
       response = Typhoeus::Request.new(
         USER_DETAILS_URL,
         headers: {
-          Authorization: "NGuyXn9TsUVt_UpYjCzs"
+          Authorization: auth_token
         },
         timeout: TIMEOUT,
         connecttimeout: CONNECTION_TIMEOUT,
         method: :get,
       ).run
-      response = respond(response)
+      response = respond(response, InvalidAuth, INVALID_AUTH_ERROR_MSG)
       response["data"]
     end
   end
