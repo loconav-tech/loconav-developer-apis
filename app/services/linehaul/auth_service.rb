@@ -16,7 +16,7 @@ module Linehaul
       response = Typhoeus::Request.new(
         USER_DETAILS_URL,
         headers: {
-          Authorization: auth_token
+          Authorization: auth_token,
         },
         timeout: TIMEOUT,
         connecttimeout: CONNECTION_TIMEOUT,

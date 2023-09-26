@@ -17,9 +17,9 @@ module Linehaul
       response = Typhoeus::Request.new(
         FETCH_DRIVER_URL,
         headers: {
-          Authorization: auth_token
+          Authorization: auth_token,
         },
-        params: params,
+        params:,
         timeout: TIMEOUT,
         connecttimeout: CONNECTION_TIMEOUT,
         method: :get,

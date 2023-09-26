@@ -11,13 +11,13 @@ module Drivers
     end
 
     def run!
-      driver = Linehaul::DriverService.new(account['authentication_token']).fetch_drivers({ name: params[:name] })
+      driver = Linehaul::DriverService.new(account["authentication_token"]).fetch_drivers({ name: params[:name] })
       if driver &&
-        driver["success"].present? &&
-        driver["success"] == true
+          driver["success"].present? &&
+          driver["success"] == true
         driver["drivers"]
       else
-        self.errors << "Driver not found"
+        errors << "Driver not found"
         self.error_code = :driver_not_found
       end
     end

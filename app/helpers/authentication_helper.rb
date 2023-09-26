@@ -9,6 +9,7 @@ module AuthenticationHelper
 
   def valid_token?
     return false unless auth_token.present?
+
     !!current_account
   end
 

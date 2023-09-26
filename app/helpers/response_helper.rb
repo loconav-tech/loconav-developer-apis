@@ -1,5 +1,4 @@
 module ResponseHelper
-
   def respond(response, klass, error_message)
     if response && response.body.present?
       response_data = JSON.parse(response.body)
