@@ -9,8 +9,8 @@ module ResponseHelper
     end
   end
 
-  def raise_error(response_data, klcass)
+  def raise_error(response_data, klass)
     error_msg = response_data.dig("error") || response_data.dig("data", "errors", 0, "message")
-    raise klcass, error_msg
+    raise klass, error_msg
   end
 end

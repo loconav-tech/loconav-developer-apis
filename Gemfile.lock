@@ -305,7 +305,6 @@ DEPENDENCIES
   rubocop-rspec
   spring
   typhoeus (~> 1.2)
-  tzinfo-data
   web-console (>= 4.1.0)
 
 RUBY VERSION
