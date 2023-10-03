@@ -101,6 +101,11 @@ GEM
     listen (3.8.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
+    lograge (0.13.0)
+      actionpack (>= 4)
+      activesupport (>= 4)
+      railties (>= 4)
+      request_store (~> 1.0)
     loofah (2.21.3)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
@@ -177,6 +182,8 @@ GEM
       declarative (< 0.1.0)
       trailblazer-option (>= 0.1.1, < 0.2.0)
       uber (< 0.2.0)
+    request_store (1.5.1)
+      rack (>= 1.4)
     rexml (3.2.6)
     rspec-expectations (3.12.3)
       diff-lcs (>= 1.2.0, < 2.0)
@@ -259,6 +266,10 @@ GEM
       addressable (>= 2.8)
     loconav-request (0.2.1)
     loconav-response (0.2.1)
+    log-core (0.2.0)
+      lograge
+      rails (>= 5.0.1)
+      railties (>= 5.0.1)
     meta-endpoints (0.4.1)
       loconav-response
       rails (>= 5.0.1)
@@ -293,6 +304,7 @@ DEPENDENCIES
   listen (~> 3.3)
   loconav-request (= 0.2.1)!
   loconav-response (= 0.2.1)!
+  log-core (= 0.2.0)!
   meta-endpoints (= 0.4.1)!
   puma (~> 5.0)
   rails (~> 7.0.8)

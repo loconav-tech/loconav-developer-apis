@@ -3,7 +3,10 @@ module Linehaul
     include ResponseHelper
     class InvalidAuth < StandardError; end
 
+    CONNECTION_TIMEOUT = 20
+    TIMEOUT = 20
     INVALID_AUTH_ERROR_MSG = "Authentication Failed"
+    LINEHAUL_BASE_URL = Rails.application.secrets.linehaul_base_url
     USER_DETAILS_URL = LINEHAUL_BASE_URL + "/api/v5/partner/user_details"
 
     attr_accessor :auth_token

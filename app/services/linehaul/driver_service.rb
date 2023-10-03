@@ -4,6 +4,9 @@ module Linehaul
 
     include ResponseHelper
 
+    CONNECTION_TIMEOUT = 20
+    TIMEOUT = 20
+    LINEHAUL_BASE_URL = Rails.application.secrets.linehaul_base_url
     FETCH_DRIVER_URL = LINEHAUL_BASE_URL + "/api/v5/drivers"
     DEFAULT_ERROR_MSG = "Error fetching data for driver".freeze
 

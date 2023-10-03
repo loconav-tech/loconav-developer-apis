@@ -1,6 +1,8 @@
 module AuthenticationHelper
   extend ActiveSupport::Concern
 
+  HEADER_USER_AUTHENTICATION = "User-Authentication".freeze
+
   def authenticate_account
     unless valid_token?
       render json: Loconav::Response::Builder.failure(errors: ["Authentication failed"]), status: :unauthorized
