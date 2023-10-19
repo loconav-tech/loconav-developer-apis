@@ -7,13 +7,9 @@ module Api
 
       def last_known
         request_params = params.permit(Vehicle::Telematics::StatsService::QUERY_PARAMS)
-        pagination = {
-          page: params[:page] || 1,
-          per_page: params[:per_page] || 10,
-          count: (request_params[:vehicleIds].count if request_params[:vehicleIds].present?),
-        }
+        pagination = build_pagination(request_params)
         service = Vehicle::Telematics::StatsService.new(
-          current_account,
+          current_account["authentication_token"],
           request_params[:vehicleIds],
           request_params[:sensors],
           pagination,
@@ -30,6 +26,14 @@ module Api
                      Loconav::Response::Builder.success(values: last_known_stats, pagination:)
                    end
         render json: response, status: status_code
+      end
+
+      private def build_pagination(request_params)
+        {
+          page: params[:page] || 1,
+          per_page: params[:per_page] || 10,
+          count: (request_params[:vehicleIds].count if request_params[:vehicleIds].present?),
+        }
       end
 
       private def to_status(service)

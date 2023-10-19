@@ -8,19 +8,15 @@ module Sensor
     end
 
     def fetch_sensors
-      sensor = {}
+      sensor = Hash.new { |hash, key| hash[key] = [] }
       sensor_types.each do |type|
-        sensor_klass = sensor_type_mapping[type]
-        unless sensor[sensor_klass]
-          sensor[sensor_klass] = []
-        end
-        sensor[sensor_klass] << type
+        sensor[sensor_type_mapping[type]] << type
       end
       sensor
     end
 
     def load_sensor_mapping
-      YAML.load_file(mapping_file = Rails.root.join("config/sensors.yml"))["sensor_types"]
+      YAML.load_file(Rails.root.join("config/sensors.yml"))["sensor_types"]
     end
   end
 end

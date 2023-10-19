@@ -5,8 +5,8 @@ module Vehicle
 
       attr_accessor :auth_token, :pagination, :vehicles, :sensors, :error_code, :errors
 
-      def initialize(account, vehicles, sensors, pagination)
-        self.auth_token = account["authentication_token"]
+      def initialize(auth_token, vehicles, sensors, pagination)
+        self.auth_token = auth_token
         self.pagination = pagination
         self.vehicles = vehicles
         self.sensors = sensors
@@ -15,7 +15,6 @@ module Vehicle
 
       def run!
         validate_data
-
         # success, response = Linehaul::VehicleService.new(auth_token).
         #   fetch_vehicle_lite(vehicles, pagination)
         # unless success
@@ -31,17 +30,14 @@ module Vehicle
 
       private def fetch_last_known_stats(vehicles_map)
         avail_sensors = Sensor::SensorService.new(sensors).fetch_sensors
-        vehicles_stat_response = []
-        vehicles.each do |vehicle_uuid|
+        vehicles.map do |vehicle_uuid|
           vehicle = {
             uuid: vehicle_uuid,
             id: vehicles_map[vehicle_uuid].first&.first,
             name: vehicles_map[vehicle_uuid].first&.second,
           }
-          Rails.logger.info "Fetching last known stats for vehicle:" + vehicle.to_s
-          vehicles_stat_response << fetch_stats(vehicle, avail_sensors)
+          fetch_stats(vehicle, avail_sensors)
         end
-        vehicles_stat_response
       end
 
       private def fetch_stats(vehicle, avail_sensors)
@@ -50,10 +46,13 @@ module Vehicle
           vehicle_id: vehicle[:uuid],
         }
         avail_sensors.each do |klass, types|
-          success, sensor_stats = "Sensor::#{klass}".constantize.new(vehicle, auth_token, types).last_known_stats
-          stats.merge!(sensor_stats) if success
-        rescue NameError => e
-          Rails.logger.error e
+          begin
+            sensor_class = "Sensor::#{klass}".constantize
+            success, sensor_stats = sensor_class.new(vehicle, auth_token, types).last_known_stats
+            stats.merge!(sensor_stats) if success
+          rescue NameError => e
+            Rails.logger.error e
+          end
         end
         stats
       end
