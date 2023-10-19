@@ -14,7 +14,6 @@ module Vehicle
       end
 
       def run!
-
         validate_data
 
         # success, response = Linehaul::VehicleService.new(auth_token).
@@ -51,12 +50,10 @@ module Vehicle
           vehicle_id: vehicle[:uuid],
         }
         avail_sensors.each do |klass, types|
-          begin
-            success, sensor_stats = "Sensor::#{klass}".constantize.new(vehicle, auth_token, types).last_known_stats
-            stats.merge!(sensor_stats) if success
-          rescue NameError => e
-            Rails.logger.error e
-          end
+          success, sensor_stats = "Sensor::#{klass}".constantize.new(vehicle, auth_token, types).last_known_stats
+          stats.merge!(sensor_stats) if success
+        rescue NameError => e
+          Rails.logger.error e
         end
         stats
       end

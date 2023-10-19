@@ -12,7 +12,8 @@ module Sensor
       #   new(auth_token).
       #   fetch_vehicle_motion_details(vehicle[:number])
 
-      success, response = true, JSON.parse(sample_resp)
+      success = true
+      response = JSON.parse(sample_resp)
 
       unless success
         [false, handle_errors(response)]
@@ -26,11 +27,16 @@ module Sensor
     private def create_response(gps_stat)
       {
         "gps": {
-          "speed": format_data("Speed", "Current speed of the vehicle", gps_stat["speed"]["unit"], gps_stat["speed"]["value"], gps_stat["location"]["received_ts"]),
-          "orientation": format_data("Orientation", "Current orientation of the vehicle", "degrees", gps_stat["orientation"], gps_stat["location"]["received_ts"]),
-          "ignition": format_data("Ignition", "Ignition status of the vehicle", "", gps_stat["ignition"], gps_stat["location"]["received_ts"]),
-          "lat": format_data("Latitude", "Latitude coordinates", "degrees", gps_stat["location"]["lat"], gps_stat["location"]["received_ts"]),
-          "long": format_data("Longitude", "Longitude coordinates", "degrees", gps_stat["location"]["long"], gps_stat["location"]["received_ts"]),
+          "speed": format_data("Speed", "Current speed of the vehicle", gps_stat["speed"]["unit"],
+                               gps_stat["speed"]["value"], gps_stat["location"]["received_ts"]),
+          "orientation": format_data("Orientation", "Current orientation of the vehicle", "degrees",
+                                     gps_stat["orientation"], gps_stat["location"]["received_ts"]),
+          "ignition": format_data("Ignition", "Ignition status of the vehicle", "", gps_stat["ignition"],
+                                  gps_stat["location"]["received_ts"]),
+          "lat": format_data("Latitude", "Latitude coordinates", "degrees", gps_stat["location"]["lat"],
+                             gps_stat["location"]["received_ts"]),
+          "long": format_data("Longitude", "Longitude coordinates", "degrees", gps_stat["location"]["long"],
+                              gps_stat["location"]["received_ts"]),
         },
       }
     end

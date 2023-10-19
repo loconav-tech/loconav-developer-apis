@@ -13,7 +13,8 @@ module Sensor
       #   new(auth_token).
       #   fetch_vehicle_sensor_details(vehicle[:id])
 
-      success, response = true, JSON.parse(sample_resp)
+      success = true
+      response = JSON.parse(sample_resp)
 
       unless success
         [false, handle_errors(response)]
