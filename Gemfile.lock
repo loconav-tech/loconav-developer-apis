@@ -298,6 +298,7 @@ PLATFORMS
 
 DEPENDENCIES
   bootsnap
+  concurrent-ruby
   debug
   dotenv-rails
   factory_bot_rails

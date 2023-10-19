@@ -1,0 +1,6 @@
+sensor_types:
+  GPS: GpsSensor
+  ENGINE: EngineSensor
+  FUEL: FuelSensor
+  ENGINE_COOLENT_TEMPERATURE: EngineSensor
+  ENGINE_POWER: EngineSensor

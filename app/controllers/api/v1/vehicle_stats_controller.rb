@@ -7,7 +7,15 @@ module Api
 
       def last_known
         request_params = params.permit(Vehicle::Telematics::StatsService::QUERY_PARAMS)
-        service = Vehicle::Telematics::StatsService.new(current_account, request_params[:vehicleIds], request_params[:sensors])
+        pagination = {
+          page: params[:page] || 1,
+          per_page: params[:per_page] || 10,
+        }
+        service = Vehicle::Telematics::StatsService.new(
+          current_account,
+          request_params[:vehicleIds],
+          request_params[:sensors],
+          pagination)
         last_known_stats = service.run!
         status_code = to_status(service)
 

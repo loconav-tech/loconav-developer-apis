@@ -18,11 +18,11 @@ module Linehaul
       self.auth_token = auth_token
     end
 
-    def fetch_vehicle_lite(vehicles)
+    def fetch_vehicle_lite(vehicles, pagination)
       req_body = build_vehicle_lite_request(vehicles)
       Rails.logger.info req_body
       response = Typhoeus::Request.new(
-        FETCH_VEHICLE_LITE_URL,
+        FETCH_VEHICLE_LITE_URL + "page=" + pagination[:page] + "per_page=" + pagination[:per_page],
         headers: {
           Authorization: auth_token,
         },
