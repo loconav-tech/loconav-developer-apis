@@ -43,7 +43,7 @@ module Linehaul
         timeout: TIMEOUT,
         connecttimeout: CONNECTION_TIMEOUT,
         method: :get,
-        ).run
+      ).run
       parse_response(response)
     end
 
@@ -56,13 +56,13 @@ module Linehaul
         timeout: TIMEOUT,
         connecttimeout: CONNECTION_TIMEOUT,
         method: :get,
-        ).run
+      ).run
       parse_response(response)
     end
 
     private def build_vehicle_lite_request(vehicles)
       {
-        "vehicle_ids": vehicles
+        "vehicle_ids": vehicles,
       }
     end
 
@@ -70,9 +70,9 @@ module Linehaul
       if response && response.body.present?
         response_data = JSON.parse(response.body)
         if response.success?
-          return true, response_data
+          [true, response_data]
         else
-          return false, response_data["error"]
+          [false, response_data["error"]]
         end
       else
         raise klass, error_message

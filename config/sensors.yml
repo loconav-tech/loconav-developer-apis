@@ -1,6 +1,7 @@
 sensor_types:
-  GPS: GpsSensor
-  ENGINE: EngineSensor
-  FUEL: FuelSensor
-  ENGINE_COOLENT_TEMPERATURE: EngineSensor
-  ENGINE_POWER: EngineSensor
+  gps: GpsSensor
+  power_cut_status_value: EngineSensor
+  temperature_value: EngineSensor
+  ignition_value: EngineSensor
+  orientation_value: EngineSensor
+  battery_level_value: EngineSensor

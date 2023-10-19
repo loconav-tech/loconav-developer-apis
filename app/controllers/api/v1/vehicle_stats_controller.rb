@@ -10,12 +10,14 @@ module Api
         pagination = {
           page: params[:page] || 1,
           per_page: params[:per_page] || 10,
+          count: (request_params[:vehicleIds].count if request_params[:vehicleIds].present?)
         }
         service = Vehicle::Telematics::StatsService.new(
           current_account,
           request_params[:vehicleIds],
           request_params[:sensors],
-          pagination)
+          pagination,
+        )
         last_known_stats = service.run!
         status_code = to_status(service)
 
@@ -25,7 +27,7 @@ module Api
                                                                    code: status_code,
                                                                  }])
                    else
-                     Loconav::Response::Builder.success(values: drivers)
+                     Loconav::Response::Builder.success(values: last_known_stats, pagination: pagination)
                    end
         render json: response, status: status_code
       end
