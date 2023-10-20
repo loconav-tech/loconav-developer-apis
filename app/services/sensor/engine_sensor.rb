@@ -9,12 +9,9 @@ module Sensor
     end
 
     def last_known_stats
-      # success, response = Linehaul::VehicleService.
-      #   new(auth_token).
-      #   fetch_vehicle_sensor_details(vehicle[:id])
-
-      success = true
-      response = JSON.parse(sample_resp)
+      success, response = Linehaul::VehicleService.
+        new(auth_token).
+        fetch_vehicle_sensor_details(vehicle[:id])
 
       unless success
         [false, handle_errors(response)]
@@ -36,51 +33,6 @@ module Sensor
         errors << "VehicleIds field missing"
         self.error_code = :missing_vehicleIds
       end
-    end
-
-    def sample_resp
-      {
-        "success": true,
-        "data": {
-          "power_cut_status_value": {
-            "display_name": "Device External Power",
-            "description": "",
-            "unit": nil,
-            "value": "ON",
-            "sensor_type": "",
-          },
-          "temperature_value": {
-            "display_name": "Temperature",
-            "description": "It is used check the temperature of vehicle.",
-            "unit": "",
-            "value": "N/A",
-            "sensor_type": "temperature",
-            "timestamp": nil,
-            "status": nil,
-          },
-          "ignition_value": {
-            "display_name": "Ignition",
-            "description": "It is used to check IGNITION of vehicle is ON/OFF (value is in bool).",
-            "unit": "",
-            "value": "ON",
-            "sensor_type": "ignition",
-          },
-          "orientation_value": {
-            "display_name": "Orientation Value",
-            "description": "",
-            "unit": nil,
-            "value": "192",
-            "sensor_type": "",
-          },
-          "battery_level_value": {
-            "display_name": "Device Battery %",
-            "description": "It shows the device battery level",
-            "unit": "%",
-            "value": "95",
-            "sensor_type": "",
-          },
-        },
-      }.to_json
     end
   end
 end

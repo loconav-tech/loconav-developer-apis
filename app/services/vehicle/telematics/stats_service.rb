@@ -14,7 +14,6 @@ module Vehicle
       end
 
       def run!
-        validate_data
         # success, response = Linehaul::VehicleService.new(auth_token).
         #   fetch_vehicle_lite(vehicles, pagination)
         # unless success
@@ -47,8 +46,8 @@ module Vehicle
         }
         avail_sensors.each do |klass, types|
           begin
-            sensor_class = "Sensor::#{klass}".constantize
-            success, sensor_stats = sensor_class.new(vehicle, auth_token, types).last_known_stats
+            sensor_klass = "Sensor::#{klass}".constantize
+            success, sensor_stats = sensor_klass.new(vehicle, auth_token, types).last_known_stats
             stats.merge!(sensor_stats) if success
           rescue NameError => e
             Rails.logger.error e
@@ -56,8 +55,6 @@ module Vehicle
         end
         stats
       end
-
-      private def validate_data; end
 
       private def handle_errors(error_response)
         if error_response == "vehicle_ids is invalid"

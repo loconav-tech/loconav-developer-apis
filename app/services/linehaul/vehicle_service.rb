@@ -22,7 +22,7 @@ module Linehaul
       req_body = build_vehicle_lite_request(vehicles)
       Rails.logger.info req_body
       response = Typhoeus::Request.new(
-        FETCH_VEHICLE_LITE_URL + "page=" + pagination[:page] + "per_page=" + pagination[:per_page],
+        FETCH_VEHICLE_LITE_URL + "?page=" + pagination[:page].to_s + "&per_page=" + pagination[:per_page].to_s,
         headers: {
           Authorization: auth_token,
         },
@@ -36,7 +36,7 @@ module Linehaul
 
     def fetch_vehicle_motion_details(vehicle_number)
       response = Typhoeus::Request.new(
-        FETCH_VEHICLE_MOTION_URL + "&number=" + vehicle_number,
+        FETCH_VEHICLE_MOTION_URL + "&number=" + vehicle_number.to_s,
         headers: {
           Authorization: auth_token,
         },
@@ -49,7 +49,7 @@ module Linehaul
 
     def fetch_vehicle_sensor_details(vehicle_id)
       response = Typhoeus::Request.new(
-        FETCH_VEHICLE_SENSOR_URL + "/" + vehicle_id + "/",
+        FETCH_VEHICLE_SENSOR_URL + "/" + vehicle_id.to_s + "/current_sensor_values",
         headers: {
           Authorization: auth_token,
         },
