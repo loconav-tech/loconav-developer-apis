@@ -20,7 +20,7 @@ module Linehaul
 
     def fetch_vehicle_lite(vehicles, pagination)
       req_body = build_vehicle_lite_request(vehicles)
-      Rails.logger.info req_body
+      # Rails.logger.info req_body
       response = Typhoeus::Request.new(
         FETCH_VEHICLE_LITE_URL + "?page=" + pagination[:page].to_s + "&per_page=" + pagination[:per_page].to_s,
         headers: {
@@ -70,7 +70,7 @@ module Linehaul
       if response && response.body.present?
         if response.success?
           response_data = JSON.parse(response.body)
-          Rails.logger.info response_data.to_s
+          # Rails.logger.info response_data.to_s
           [true, response_data]
         else
           if response.response_code == 500

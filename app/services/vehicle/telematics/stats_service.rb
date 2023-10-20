@@ -140,16 +140,25 @@ module Vehicle
           vehicle_number: vehicle[:name],
           vehicle_id: vehicle[:uuid],
         }
+
+        sensor_promises = []
         avail_sensors.each do |klass, types|
-          begin
-            sensor_klass = "Sensor::#{klass}".constantize
-            success, sensor_stats = sensor_klass.new(vehicle, auth_token, types).last_known_stats
-            stats.merge!(sensor_stats) if success
-          rescue NameError => e
-            Rails.logger.error e
-          end
+          sensor_promises << (Concurrent::Promises.future do
+            begin
+              sensor_klass = "Sensor::#{klass}".constantize
+              success, sensor_stats = sensor_klass.new(vehicle, auth_token, types).last_known_stats
+              success ? sensor_stats : {}
+            rescue NameError => e
+              Rails.logger.error e
+            end
+          end)
         end
-        stats
+        Concurrent::Promises.zip(*sensor_promises).then do |*sensor_results|
+          sensor_results.each do |sensor_stats|
+            stats.merge!(sensor_stats)
+          end
+          stats
+        end.value
       end
 
       private def handle_errors(error_response)
