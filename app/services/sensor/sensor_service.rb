@@ -8,11 +8,9 @@ module Sensor
     end
 
     def fetch_sensors
-      if sensor_types.empty?
-        sensor_types = get_default_sensor
-      end
+      self.sensor_types = get_default_sensor if self.sensor_types.empty?
       sensor = Hash.new { |hash, key| hash[key] = [] }
-      sensor_types.each do |type|
+      self.sensor_types.each do |type|
         sensor[sensor_type_mapping[type]] << type
       end
       sensor

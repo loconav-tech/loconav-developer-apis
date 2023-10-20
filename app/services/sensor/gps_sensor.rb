@@ -8,7 +8,7 @@ module Sensor
     end
 
     def last_known_stats
-      success, response = Linehaul::VehicleService.new(auth_token).fetch_vehicle_motion_details(vehicle[:number])
+      success, response = Linehaul::VehicleService.new(auth_token).fetch_vehicle_motion_details(vehicle[:name])
 
       unless success
         [false, handle_errors(response)]

@@ -68,14 +68,20 @@ module Linehaul
 
     private def parse_response(response)
       if response && response.body.present?
-        response_data = JSON.parse(response.body)
         if response.success?
+          response_data = JSON.parse(response.body)
+          Rails.logger.info response_data.to_s
           [true, response_data]
         else
-          [false, response_data["error"]]
+          if response.response_code == 500
+            [false, "Something went wrong"]
+          else
+            response_data = JSON.parse(response.body)
+            [false, response_data["error"]]
+          end
         end
       else
-        raise klass, error_message
+        [false, nil]
       end
     end
   end

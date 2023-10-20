@@ -22,9 +22,105 @@ module Vehicle
         # end
 
         # vehicles_map = response if success
-        vehicles_map = { "0007d845-8bd8-4064-b4a3-9b84fc17548f" => [[90659, "VDIRECTORYTEST598"]],
-                         "0015f2fe-d8c6-48bb-bc47-b26ee1dd02bc" => [[92417, "TEST0017"]], "0022496e-4372-45e3-9a5d-de8afe1b02cb" => [[92913, "TEST0460"]], "00493792-9fd3-4eb1-9a02-004b050bc859" => [[90857, "VDIRECTORYTEST706"]], "0061261b-e5b4-46ca-b4e8-e462342a0c30" => [[93011, "TEST0515"]], "00654712-70cd-47d2-be80-422bdee2549d" => [[91932, "VDIRECTORY533"]], "006a939f-78df-4d04-982f-65695664b83f" => [[92773, "TEST0373"]], "006c0ec6-7546-481b-b828-55da74f015a1" => [[40012, "MOCKDEVICEDIV022"]], "006ec9b7-92bc-4e19-a061-082f39154414" => [[93623, "TEST0852"]], "00744358-efd6-40a4-b80b-3f2c663a7ac2" => [[90256, "VDIRECTORYTEST205"]] }
-        fetch_last_known_stats(vehicles_map)
+        vehicles_map = {
+          "0a216232-175a-4993-ab14-2168bc642ce0": [
+            [
+              88401,
+              "TRANSPORTER10"
+            ]
+          ],
+          "1aa3fcc2-3a84-4aa6-8577-f0c43bed3756": [
+            [
+              88398,
+              "TRANSPORTER7"
+            ]
+          ],
+          "2a4559fa-68fc-49bd-8220-b99f391ad671": [
+            [
+              93893,
+              "TESTORG3"
+            ]
+          ],
+          "2b418fe7-5225-453f-939b-0179a747471f": [
+            [
+              93892,
+              "TESTORG2"
+            ]
+          ],
+          "2bf7dd9b-db28-4485-a27f-c40fd69fcf5a": [
+            [
+              88390,
+              "TEST_BULKUPDATE"
+            ]
+          ],
+          "3001f8d7-06b4-4de4-8394-8a637f442ff5": [
+            [
+              93890,
+              "TEST_ORG1"
+            ]
+          ],
+          "40b0a5fd-4570-46c1-9eee-171db14d3c08": [
+            [
+              88549,
+              "TEST_BULKUPDATE1"
+            ]
+          ],
+          "5949e72e-cc9a-4399-b014-ef13bdf6bbce": [
+            [
+              93891,
+              "TESTORG1"
+            ]
+          ],
+          "7a1cc9bb-28c0-4f52-8b7c-c5e03071d36e": [
+            [
+              93894,
+              "TESTORG4"
+            ]
+          ],
+          "8b59225d-3538-4d78-af51-7bff478c50b4": [
+            [
+              32676,
+              "DCS_VEHICLE"
+            ]
+          ],
+          "8e457fee-69b0-423c-896d-3b1372fd8f7b": [
+            [
+              88399,
+              "TRANSPORTER8"
+            ]
+          ],
+          "b2c669ee-c96b-484f-8d0f-5ae877c57de8": [
+            [
+              55976,
+              "AJDWKJWD"
+            ]
+          ],
+          "b6047cfc-6c1b-4dfd-bcfa-4b9bf1f17d02": [
+            [
+              52800,
+              "DEMO4086500804"
+            ]
+          ],
+          "ddebbb67-a4a1-4d6c-bdd7-1f921db0b9ea": [
+            [
+              88712,
+              "TROUBLESHOOT_V1"
+            ]
+          ],
+          "def39687-982b-44e7-895e-10c83a3fb0e3": [
+            [
+              88976,
+              "MOCKDEVICEADDON0"
+            ]
+          ],
+          "ec3bce80-614a-4200-b092-50c539a7c315": [
+            [
+              28449,
+              "REG1234"
+            ]
+          ]
+        }.to_json
+        fetch_last_known_stats(JSON.parse(vehicles_map))
       end
 
       private def fetch_last_known_stats(vehicles_map)
