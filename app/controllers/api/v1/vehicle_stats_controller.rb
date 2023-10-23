@@ -20,9 +20,9 @@ module Api
 
         response = if service.errors.any?
                      Loconav::Response::Builder.failure(errors: [{
-                                                                   message: service.errors.join(", "),
-                                                                   code: status_code,
-                                                                 }])
+                                                          message: service.errors.join(", "),
+                                                          code: status_code,
+                                                        }])
                    else
                      Loconav::Response::Builder.success(values: stats, pagination:)
                    end
@@ -38,7 +38,8 @@ module Api
 
       private def to_status(service)
         if service.error_code
-          if service.error_code.in?(%i[invalid_pagination_request invalid_vehicleIds missing_vehicleIds sensor_not_supported invalid_sensors_count])
+          if service.error_code.in?(%i[invalid_pagination_request invalid_vehicleIds missing_vehicleIds
+                                       sensor_not_supported invalid_sensors_count])
             :bad_request
           elsif service.error_code.in?(%i[technical_issue data_not_found])
             :unprocessable_entity

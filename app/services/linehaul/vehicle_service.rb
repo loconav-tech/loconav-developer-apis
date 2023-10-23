@@ -71,13 +71,11 @@ module Linehaul
         if response.success?
           response_data = JSON.parse(response.body)
           [true, response_data]
+        elsif response.response_code == 500
+          [false, "Technical issue"]
         else
-          if response.response_code == 500
-            [false, "Technical issue"]
-          else
-            response_data = JSON.parse(response.body)
-            [false, response_data["error"]]
-          end
+          response_data = JSON.parse(response.body)
+          [false, response_data["error"]]
         end
       else
         [false, "Technical issue"]

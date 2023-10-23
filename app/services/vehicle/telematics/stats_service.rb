@@ -55,13 +55,15 @@ module Vehicle
 
       private def fetch_last_known
         vehicles.map do |vehicle_uuid|
-          vehicles_map[vehicle_uuid] ?
+          if vehicles_map[vehicle_uuid]
             fetch_last_known_stats({
                                      uuid: vehicle_uuid,
                                      id: vehicles_map[vehicle_uuid].first&.first,
                                      name: vehicles_map[vehicle_uuid].first&.second,
-                                   }) :
+                                   })
+          else
             { vehicle_id: vehicle_uuid, error: "Vehicle not found" }
+          end
         end
       end
 
@@ -121,7 +123,6 @@ module Vehicle
           errors << "Technical issue, please try again later"
           self.error_code = :technical_issue
         end
-
       end
     end
   end
