@@ -9,10 +9,7 @@ module Sensor
 
     def last_known_stats
       success, response = Linehaul::VehicleService.new(auth_token).fetch_vehicle_motion_details(vehicle[:name])
-
-      unless success
-        [false, handle_errors(response)]
-      end
+      ([false, fetch_error_message(response)] && return) unless success
 
       gps_stat = response["data"]["vehicles"][0]["additional_attributes"]["movement_metrics"]
       gps_stat_response = create_response(gps_stat)
@@ -46,14 +43,10 @@ module Sensor
       }
     end
 
-    private def handle_errors(error_response)
-      if error_response == "vehicle_ids is invalid"
-        errors << "Invalid vehicleIds field"
-        self.error_code = :invalid_vehicleIds
-      elsif error_response == "vehicle_ids is missing"
-        errors << "VehicleIds field missing"
-        self.error_code = :missing_vehicleIds
-      end
+    # Vehicle details data API throw only Vehicle not found error
+    private def fetch_error_message(error_msg)
+      Rails.logger.error "Error in fetching last known stat for vehicle: " + vehicle[:uuid].to_s + " Error: " + error_msg
+      "Technical issue"
     end
   end
 end

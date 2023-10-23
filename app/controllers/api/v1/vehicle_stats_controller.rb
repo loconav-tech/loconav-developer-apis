@@ -40,6 +40,8 @@ module Api
         if service.error_code
           if service.error_code.in?(%i[invalid_vehicleIds missing_vehicleIds])
             :bad_request
+          elsif service.error_code.in?(%i[technical_issue data_not_found])
+            :unprocessable_entity
           end
         else
           :ok

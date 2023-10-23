@@ -70,18 +70,17 @@ module Linehaul
       if response && response.body.present?
         if response.success?
           response_data = JSON.parse(response.body)
-          # Rails.logger.info response_data.to_s
           [true, response_data]
         else
           if response.response_code == 500
-            [false, "Something went wrong"]
+            [false, "Technical issue"]
           else
             response_data = JSON.parse(response.body)
             [false, response_data["error"]]
           end
         end
       else
-        [false, nil]
+        [false, "Technical issue"]
       end
     end
   end
