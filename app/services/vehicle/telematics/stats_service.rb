@@ -4,12 +4,13 @@ module Vehicle
       include UtilHelper
       QUERY_PARAMS = [vehicleIds: [], sensors: []].freeze
 
-      attr_accessor :auth_token, :pagination, :vehicles, :vehicles_map, :sensors, :error_code, :errors
+      attr_accessor :auth_token, :pagination, :vehicles, :count, :vehicles_map, :sensors, :error_code, :errors
 
       def initialize(auth_token, vehicles, sensors, pagination)
         self.auth_token = auth_token
         self.pagination = pagination
         self.vehicles = vehicles
+        self.count = vehicles.count || 0
         self.vehicles_map = {}
         self.sensors = sensors
         self.errors = []
@@ -19,7 +20,9 @@ module Vehicle
         validate!
         fetch_sensors if errors.empty?
         fetch_vehicles if errors.empty?
-        fetch_last_known if errors.empty?
+        stats = fetch_last_known if errors.empty?
+        pagination_metadata = pagination_metadata(pagination, count) if errors.empty?
+        [stats, pagination_metadata]
       end
 
       private def validate!
@@ -45,6 +48,7 @@ module Vehicle
         self.vehicles_map = response["data"]["vehicles"]
 
         if vehicles.empty? && vehicles_map.present?
+          self.count = vehicles_map.count
           self.vehicles = vehicles_map.keys[start_index...end_index]
         end
       end
