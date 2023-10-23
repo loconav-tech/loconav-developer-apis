@@ -8,13 +8,22 @@ module Sensor
     end
 
     def fetch_sensors
-      return [false, "Technical issue"] if sensor_type_mapping.nil?
-      self.sensor_types = get_default_sensor if self.sensor_types.empty?
+      success, response = validate!
+      return [success, response] unless success
+
       sensor = Hash.new { |hash, key| hash[key] = [] }
-      self.sensor_types.each do |type|
+      sensor_types.each do |type|
+        return [false, "Sensor type #{type} not supported"] unless sensor_type_mapping[type]
         sensor[sensor_type_mapping[type]] << type
       end
+
       [true, sensor]
+    end
+
+    private def validate!
+      return [false, "Technical issue"] if sensor_type_mapping.nil?
+      self.sensor_types = get_default_sensor if sensor_types.empty?
+      sensor_types.count > 3 ? [false, "Only 3 sensors supported at a time"] : [true, nil]
     end
 
     def load_sensor_mapping

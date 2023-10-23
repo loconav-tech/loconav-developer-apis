@@ -29,6 +29,7 @@ module Api
       end
 
       private def build_pagination(request_params)
+
         {
           page: params[:page] || 1,
           per_page: params[:per_page] || 10,
@@ -38,7 +39,7 @@ module Api
 
       private def to_status(service)
         if service.error_code
-          if service.error_code.in?(%i[invalid_vehicleIds missing_vehicleIds])
+          if service.error_code.in?(%i[invalid_pagination_request invalid_vehicleIds missing_vehicleIds sensor_not_supported invalid_sensors_count])
             :bad_request
           elsif service.error_code.in?(%i[technical_issue data_not_found])
             :unprocessable_entity

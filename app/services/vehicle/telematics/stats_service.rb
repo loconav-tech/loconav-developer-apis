@@ -1,48 +1,74 @@
 module Vehicle
   module Telematics
     class StatsService
+      include UtilHelper
       QUERY_PARAMS = [vehicleIds: [], sensors: []].freeze
 
-      attr_accessor :auth_token, :pagination, :vehicles, :sensors, :error_code, :errors
+      attr_accessor :auth_token, :pagination, :vehicles, :vehicles_map, :sensors, :error_code, :errors
 
       def initialize(auth_token, vehicles, sensors, pagination)
         self.auth_token = auth_token
         self.pagination = pagination
         self.vehicles = vehicles
+        self.vehicles_map = {}
         self.sensors = sensors
         self.errors = []
       end
 
       def run!
-        success, response = Linehaul::VehicleService.new(auth_token).fetch_vehicle_lite(vehicles, pagination)
+        validate!
+        fetch_sensors if errors.empty?
+        fetch_vehicles if errors.empty?
+        fetch_last_known if errors.empty?
+      end
+
+      private def validate!
+        handle_errors("Invalid page request") unless pagination[:page].to_i > 0
+        handle_errors("Invalid per_page request") unless pagination[:per_page].to_i > 0
+      end
+
+      private def fetch_sensors
+        success, response = Sensor::SensorService.new(sensors).fetch_sensors
+        (handle_errors(response) && return) unless success
+        self.sensors = response
+      end
+
+      private def fetch_vehicles
+        start_index, end_index = get_indices(pagination)
+        self.vehicles = vehicles.present? ? vehicles[start_index...end_index] : []
+        (handle_errors("Data not found") && return) if vehicles.nil?
+
+        success, response = Linehaul::VehicleService.new(auth_token).fetch_vehicle_lite(vehicles)
         (handle_errors(response) && return) unless success
         (handle_errors("Data not found") && return) unless response["data"].present? && response["data"]["vehicles"].present?
 
-        fetch(response["data"]["vehicles"])
-      end
+        self.vehicles_map = response["data"]["vehicles"]
 
-      private def fetch(vehicles_map)
-        success, response = Sensor::SensorService.new(sensors).fetch_sensors
-        (handle_errors(response) && return) unless success
-
-        vehicles.map do |vehicle_uuid|
-          vehicle = {
-            uuid: vehicle_uuid,
-            id: vehicles_map[vehicle_uuid].first&.first,
-            name: vehicles_map[vehicle_uuid].first&.second,
-          }
-          fetch_last_known_stats(vehicle, response)
+        if vehicles.empty? && vehicles_map.present?
+          self.vehicles = vehicles_map.keys[start_index...end_index]
         end
       end
 
-      private def fetch_last_known_stats(vehicle, avail_sensors)
+      private def fetch_last_known
+        vehicles.map do |vehicle_uuid|
+          vehicles_map[vehicle_uuid] ?
+            fetch_last_known_stats({
+                                     uuid: vehicle_uuid,
+                                     id: vehicles_map[vehicle_uuid].first&.first,
+                                     name: vehicles_map[vehicle_uuid].first&.second,
+                                   }) :
+            { vehicle_id: vehicle_uuid, error: "Vehicle not found" }
+        end
+      end
+
+      private def fetch_last_known_stats(vehicle)
         stats = {
           vehicle_number: vehicle[:name],
           vehicle_id: vehicle[:uuid],
         }
 
         sensor_promises = []
-        avail_sensors.each do |klass, types|
+        sensors.each do |klass, types|
           sensor_promises << (Concurrent::Promises.future do
             sensor_stats = nil
             begin
@@ -65,19 +91,33 @@ module Vehicle
       end
 
       private def handle_errors(error_response)
-        if error_response == "vehicle_ids is invalid"
-          errors << "Invalid vehicleIds field"
+        case error_response
+        when "Invalid page request"
+          errors << error_response
+          self.error_code = :invalid_pagination_request
+        when "Invalid per_page request"
+          errors << error_response
+          self.error_code = :invalid_pagination_request
+        when "vehicle_ids is invalid"
+          errors << "Invalid vehicleIds request"
           self.error_code = :invalid_vehicleIds
-        elsif error_response == "vehicle_ids is missing"
+        when "vehicle_ids is missing"
           errors << "VehicleIds field missing"
           self.error_code = :missing_vehicleIds
-        elsif error_response == "Data not found"
+        when /not supported/
+          errors << error_response
+          self.error_code = :sensor_not_supported
+        when "Only 3 sensors supported at a time"
+          errors << error_response
+          self.error_code = :invalid_sensors_count
+        when "Data not found"
           errors << "Data not found"
           self.error_code = :data_not_found
-        elsif error_response == "Technical issue"
+        else
           errors << "Technical issue, please try again later"
           self.error_code = :technical_issue
         end
+
       end
     end
   end
