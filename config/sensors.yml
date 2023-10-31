@@ -3,39 +3,33 @@ sensor_types:
   battery_level_value: EngineSensor
   battery_temperature: EngineSensor
   device_temperature: EngineSensor
-  engine_coolant_temperature: EngineSensor
   engine_coolant_temperature_value: EngineSensor
-  engine_fuel_rate: EngineSensor
+  engine_fuel_rate_value: EngineSensor
   engine_fuel_temperature: EngineSensor
   engine_intake_manifold_1_temperature_value: EngineSensor
-  engine_oil_temperature: EngineSensor
   engine_oil_temperature_value: EngineSensor
   engine_operation_status: EngineSensor
-  engine_rpm: EngineSensor
-  engine_temperature: EngineSensor
+  engine_rpm_value: EngineSensor
   engine_temperature_value: EngineSensor
-  engine_working: EngineSensor
+  engine_working_value: EngineSensor
   fuel_consumed_counted_value: EngineSensor
   fuel_consumption_value: EngineSensor
   fuel_injection_quantity: EngineSensor
   fuel_level_2_value: EngineSensor
   fuel_level_obd_value: EngineSensor
-  fuel_quantity: EngineSensor
-  fuel_rail_pressure: EngineSensor
+  max_fuel_quantity: EngineSensor
+  absolute_fuel_rail_pressure: EngineSensor
   fuel_rate_value: EngineSensor
   fuel_tank_level_value: EngineSensor
-  fuel_temperature: EngineSensor
-  fuel_trim: EngineSensor
+  short_fuel_trim: EngineSensor
   fuel_type: EngineSensor
-  fuel_used_high_resolution_value: EngineSensor
-  fuel_used_value: EngineSensor
+  total_engine_fuel_used_high_resolution_value: EngineSensor
+  total_engine_fuel_used_value: EngineSensor
   fuel_value: EngineSensor
   gps: GpsSensor
-  ignition_value: EngineSensor
   imsi_value: EngineSensor
-  intenal_storage_used: EngineSensor
+  internal_storage_used: EngineSensor
   internal_storage_size: EngineSensor
-  orientation_value: EngineSensor
   power_cut_status_value: EngineSensor
   rssi_value: EngineSensor
   sd_card_cid: EngineSensor
@@ -45,3 +39,4 @@ sensor_types:
   sim_card_status: EngineSensor
   temperature_value: EngineSensor
   washer_fluid_level_value: EngineSensor
+  load_sensor_value: EngineSensor

@@ -1,17 +1,15 @@
 module Vehicle
   module Telematics
     class StatsService
-      include UtilHelper
+      include UtilHelper, ResponseHelper
       QUERY_PARAMS = [vehicleIds: [], sensors: []].freeze
 
-      attr_accessor :auth_token, :pagination, :vehicles, :count, :vehicles_map, :sensors, :error_code, :errors
+      attr_accessor :auth_token, :pagination, :vehicles, :sensors, :error_code, :errors
 
       def initialize(auth_token, vehicles, sensors, pagination)
         self.auth_token = auth_token
         self.pagination = pagination
         self.vehicles = vehicles
-        self.count = vehicles.count || 0
-        self.vehicles_map = {}
         self.sensors = sensors
         self.errors = []
       end
@@ -29,6 +27,7 @@ module Vehicle
       private def fetch_stats
         success, response = Linehaul::VehicleService.new(auth_token).fetch_vehicle_sensor_details(vehicles, pagination)
         (handle_errors(response) && return) unless success
+
         if response["data"].present? && response["data"]["vehicles"].present? && response["data"]["pagination"].present?
           if errors.empty?
             pagination_metadata = pagination_metadata(pagination,
@@ -47,16 +46,13 @@ module Vehicle
             vehicle_id: vehicle["vehicle_id"],
           }.merge(
             sensors.each_with_object({}) do |sensor, extracted|
-              next unless vehicle.key?(sensor)
-
-              sensor_data = vehicle[sensor]
-              extracted[sensor] = {
-                "display_name" => sensor_data["display_name"],
-                "unit" => sensor_data["unit"],
-                "value" => sensor_data["value"],
-                "description" => sensor_data["description"],
-                "timestamp" => sensor_data["timestamp"],
-              }
+              if sensor == "gps"
+                extracted[sensor] = Sensor::GpsSensor.new(vehicle, sensors).format_gps_stats
+              else
+                next unless vehicle.key?(sensor)
+                sensor_data = vehicle[sensor]
+                extracted[sensor] = format_data(sensor_data)
+              end
             end,
           )
         end
