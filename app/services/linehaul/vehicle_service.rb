@@ -18,22 +18,6 @@ module Linehaul
       self.auth_token = auth_token
     end
 
-    def fetch_vehicle_lite(vehicles)
-      req_body = build_vehicle_lite_request(vehicles)
-      # Rails.logger.info req_body
-      response = Typhoeus::Request.new(
-        FETCH_VEHICLE_LITE_URL,
-        headers: {
-          Authorization: auth_token,
-        },
-        body: req_body,
-        timeout: TIMEOUT,
-        connecttimeout: CONNECTION_TIMEOUT,
-        method: :post,
-      ).run
-      parse_response(response)
-    end
-
     def fetch_vehicle_motion_details(vehicle_number)
       response = Typhoeus::Request.new(
         FETCH_VEHICLE_MOTION_URL + "&number=" + vehicle_number.to_s,
@@ -53,7 +37,7 @@ module Linehaul
         headers: {
           Authorization: auth_token,
         },
-        body: {"vehicle_ids": vehicles},
+        body: build_sensor_details_request(vehicles),
         timeout: TIMEOUT,
         connecttimeout: CONNECTION_TIMEOUT,
         method: :post,
@@ -61,7 +45,7 @@ module Linehaul
       parse_response(response)
     end
 
-    private def build_vehicle_lite_request(vehicles)
+    private def build_sensor_details_request(vehicles)
       {
         "vehicle_ids": vehicles,
       }

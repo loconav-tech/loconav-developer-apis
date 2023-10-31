@@ -19,11 +19,6 @@ module Vehicle
       def run!
         validate!
         fetch_stats if errors.empty?
-        # fetch_sensors if errors.empty?
-        # fetch_vehicles if errors.empty?
-        # stats = fetch_last_known if errors.empty?
-        # pagination_metadata = pagination_metadata(pagination, count) if errors.empty?
-        # [stats, pagination_metadata]
       end
 
       private def validate!
@@ -35,7 +30,10 @@ module Vehicle
         success, response = Linehaul::VehicleService.new(auth_token).fetch_vehicle_sensor_details(vehicles, pagination)
         (handle_errors(response) && return) unless success
         if response["data"].present? && response["data"]["vehicles"].present? && response["data"]["pagination"].present?
-          pagination_metadata = pagination_metadata(pagination, response["data"]["pagination"]["total_count"]) if errors.empty?
+          if errors.empty?
+            pagination_metadata = pagination_metadata(pagination,
+                                                      response["data"]["pagination"]["total_count"])
+          end
           [format_response(response["data"]["vehicles"]), pagination_metadata]
         else
           handle_errors("Technical issue")
@@ -43,95 +41,31 @@ module Vehicle
       end
 
       private def format_response(sensor_response)
-        stats = []
-        sensor_response.each do |vehicle|
-          stat = {
+        sensor_response.map do |vehicle|
+          {
             vehicle_number: vehicle["vehicle_number"],
-            "vehicle_id": vehicle["vehicle_id"],
-          }
-          extracted = {}
-          sensors.each do |sensor|
-            if vehicle.key?(sensor)
+            vehicle_id: vehicle["vehicle_id"],
+          }.merge(
+            sensors.each_with_object({}) do |sensor, extracted|
+              next unless vehicle.key?(sensor)
+
               sensor_data = vehicle[sensor]
               extracted[sensor] = {
                 "display_name" => sensor_data["display_name"],
                 "unit" => sensor_data["unit"],
                 "value" => sensor_data["value"],
                 "description" => sensor_data["description"],
-                "timestamp" => sensor_data["timestamp"]
+                "timestamp" => sensor_data["timestamp"],
               }
-            end
-          end
-          stat.merge!(extracted)
-          stats << stat
+            end,
+          )
         end
-        stats
       end
 
       private def fetch_sensors
         success, response = Sensor::SensorService.new(sensors).fetch_sensors
         (handle_errors(response) && return) unless success
         self.sensors = response
-      end
-
-      private def fetch_vehicles
-        start_index, end_index = get_indices(pagination)
-        self.vehicles = vehicles.present? ? vehicles[start_index...end_index] : []
-        (handle_errors("Data not found") && return) if vehicles.nil?
-
-        success, response = Linehaul::VehicleService.new(auth_token).fetch_vehicle_lite(vehicles)
-        (handle_errors(response) && return) unless success
-        (handle_errors("Data not found") && return) unless response["data"].present? && response["data"]["vehicles"].present?
-
-        self.vehicles_map = response["data"]["vehicles"]
-
-        if vehicles.empty? && vehicles_map.present?
-          self.count = vehicles_map.count
-          self.vehicles = vehicles_map.keys[start_index...end_index]
-        end
-      end
-
-      private def fetch_last_known
-        vehicles.map do |vehicle_uuid|
-          if vehicles_map[vehicle_uuid]
-            fetch_last_known_stats({
-                                     uuid: vehicle_uuid,
-                                     id: vehicles_map[vehicle_uuid].first&.first,
-                                     name: vehicles_map[vehicle_uuid].first&.second,
-                                   })
-          else
-            { vehicle_id: vehicle_uuid, error: "Vehicle not found" }
-          end
-        end
-      end
-
-      private def fetch_last_known_stats(vehicle)
-        stats = {
-          vehicle_number: vehicle[:name],
-          vehicle_id: vehicle[:uuid],
-        }
-
-        sensor_promises = []
-        sensors.each do |klass, types|
-          sensor_promises << (Concurrent::Promises.future do
-            sensor_stats = nil
-            begin
-              sensor_klass = "Sensor::#{klass}".constantize
-              success, sensor_stats = sensor_klass.new(vehicle, auth_token, types).last_known_stats
-              (handle_errors(response) && return) unless success
-              sensor_stats
-            rescue NameError => e
-              Rails.logger.error "Error while fetching sensor data " + e.to_s
-            end
-            sensor_stats
-          end)
-        end
-        Concurrent::Promises.zip(*sensor_promises).then do |*sensor_results|
-          sensor_results.each do |sensor_stats|
-            stats.merge!(sensor_stats) if sensor_stats.present?
-          end
-          stats
-        end.value
       end
 
       private def handle_errors(error_response)
