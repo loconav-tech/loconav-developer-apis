@@ -18,16 +18,54 @@ module Vehicle
 
       def run!
         validate!
-        fetch_sensors if errors.empty?
-        fetch_vehicles if errors.empty?
-        stats = fetch_last_known if errors.empty?
-        pagination_metadata = pagination_metadata(pagination, count) if errors.empty?
-        [stats, pagination_metadata]
+        fetch_stats if errors.empty?
+        # fetch_sensors if errors.empty?
+        # fetch_vehicles if errors.empty?
+        # stats = fetch_last_known if errors.empty?
+        # pagination_metadata = pagination_metadata(pagination, count) if errors.empty?
+        # [stats, pagination_metadata]
       end
 
       private def validate!
         handle_errors("Invalid page request") unless pagination[:page].to_i > 0
         handle_errors("Invalid per_page request") unless pagination[:per_page].to_i > 0
+      end
+
+      private def fetch_stats
+        success, response = Linehaul::VehicleService.new(auth_token).fetch_vehicle_sensor_details(vehicles, pagination)
+        (handle_errors(response) && return) unless success
+        if response["data"].present? && response["data"]["vehicles"].present? && response["data"]["pagination"].present?
+          pagination_metadata = pagination_metadata(pagination, response["data"]["pagination"]["total_count"]) if errors.empty?
+          [format_response(response["data"]["vehicles"]), pagination_metadata]
+        else
+          handle_errors("Technical issue")
+        end
+      end
+
+      private def format_response(sensor_response)
+        stats = []
+        sensor_response.each do |vehicle|
+          stat = {
+            vehicle_number: vehicle["vehicle_number"],
+            "vehicle_id": vehicle["vehicle_id"],
+          }
+          extracted = {}
+          sensors.each do |sensor|
+            if vehicle.key?(sensor)
+              sensor_data = vehicle[sensor]
+              extracted[sensor] = {
+                "display_name" => sensor_data["display_name"],
+                "unit" => sensor_data["unit"],
+                "value" => sensor_data["value"],
+                "description" => sensor_data["description"],
+                "timestamp" => sensor_data["timestamp"]
+              }
+            end
+          end
+          stat.merge!(extracted)
+          stats << stat
+        end
+        stats
       end
 
       private def fetch_sensors

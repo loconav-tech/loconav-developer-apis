@@ -24,8 +24,9 @@ module Sensor
     private def validate!
       return [false, "Technical issue"] if sensor_type_mapping.nil?
 
-      self.sensor_types = get_default_sensor if sensor_types.empty?
-      sensor_types.count > 3 ? [false, "Only 3 sensors supported at a time"] : [true, nil]
+      self.sensor_types = get_default_sensor if sensor_types.nil? || sensor_types.empty?
+      # sensor_types.count > 3 ? [false, "Only 3 sensors supported at a time"] : [true, nil]
+      [true, nil]
     end
 
     def load_sensor_mapping
