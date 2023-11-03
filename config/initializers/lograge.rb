@@ -14,6 +14,7 @@ Rails.application.configure do
       request_id: event.payload[:headers]["action_dispatch.request_id"],
       LogConstants::REQUEST_START_TIME => Time.now.to_i,
       LogConstants::MESSAGE => "full_log",
+      LogConstants::ELAPSED_TIME => event.payload[:duration],
 
       remote_ip: event.payload[:remote_ip],
       ip: event.payload[:ip],
@@ -38,7 +39,8 @@ Rails.application.configure do
       LogConstants::MDC_USER_ID => controller.current_account["id"].to_s,
       LogConstants::RESPONSE_CODE => controller.response.status.to_s,
 
-      LogConstants::HEADERS => get_desired_headers(controller)
+      LogConstants::HEADERS => get_desired_headers(controller),
+
 
     }
   end
