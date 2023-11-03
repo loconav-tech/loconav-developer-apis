@@ -10,6 +10,7 @@ gem "representable"
 gem "rswag"
 gem "typhoeus", "~> 1.2"
 gem 'lograge'
+gem "logstash-event"
 
 group :development, :test do
   gem "debug", platforms: %i[mri mingw x64_mingw]
