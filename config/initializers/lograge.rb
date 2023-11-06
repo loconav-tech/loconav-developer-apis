@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 FULL_LOG_HEADERS = Rails.application.secrets.full_log_headers
+FULL_LOG_RESOURCE_TYPE=Rails.application.secrets.full_log_resource_type
+FULL_LOG_SOURCE=Rails.application.secrets.full_log_source
 
 Rails.application.configure do
   config.lograge.enabled = true
@@ -14,6 +16,10 @@ Rails.application.configure do
       request_id: event.payload[:headers]["action_dispatch.request_id"],
       LogConstants::REQUEST_START_TIME => Time.now.to_i,
       LogConstants::MESSAGE => "full_log",
+      LogConstants::RESOURCE_TYPE => FULL_LOG_RESOURCE_TYPE,
+      LogConstants::SOURCE => FULL_LOG_SOURCE,
+
+
       LogConstants::ELAPSED_TIME => event.payload[:duration],
 
       remote_ip: event.payload[:remote_ip],
@@ -46,13 +52,13 @@ Rails.application.configure do
   end
 
   def get_desired_headers(controller)
-    header_value_pairs = []
+    desired_header = {}
 
     FULL_LOG_HEADERS.each do |header|
       if controller.request.headers[header].present?
-        header_value_pairs << [header, controller.request.headers[header]]
+        desired_header[header.to_sym] = controller.request.headers[header]
       end
     end
-    header_value_pairs[0]
+    desired_header.as_json
   end
 end
