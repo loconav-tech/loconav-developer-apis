@@ -29,6 +29,10 @@ module Api
         render json: response, status: status_code
       end
 
+      def history
+        # Vehicle history stats API
+      end
+
       private def build_pagination
         {
           page: params[:page].to_i || 1,
