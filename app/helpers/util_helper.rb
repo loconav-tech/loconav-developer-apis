@@ -11,4 +11,11 @@ module UtilHelper
       more: total_count > (pagination[:page].to_i * pagination[:per_page].to_i),
     }
   end
+
+  private def build_pagination(params)
+    {
+      page: params[:page].to_i || 1,
+      per_page: params[:per_page].to_i || 10,
+    }
+  end
 end
