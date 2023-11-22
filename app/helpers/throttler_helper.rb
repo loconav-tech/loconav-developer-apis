@@ -47,7 +47,7 @@ module ThrottlerHelper
         window = client[:window]
         redis_key = key
       end
-    elsif client_map["api_config"][:api_config]["#{endpoint},#{http_method}"].present?
+    elsif client_map["api_config"].present? && client_map["api_config"][:api_config]["#{endpoint},#{http_method}"].present?
       api_config = client_map["api_config"][:api_config]["#{endpoint},#{http_method}"]
       limit = api_config["limit"]
       window = api_config["window"]
