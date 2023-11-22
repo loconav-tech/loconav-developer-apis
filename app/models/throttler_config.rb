@@ -1,6 +1,8 @@
 class ThrottlerConfig < ApplicationRecord
   include ThrottlerHelper
 
+  enum scope:{local:'local',global:'global'}
+
   validates :scope,presence: true,on: :create
   validates :auth_token, uniqueness: true, if: -> { scope == "local" },on: :create
   validates :client_id,:client_type,:auth_token,:limit,:window,presence: true, if: -> { scope == "local" },on: :create
