@@ -1,6 +1,6 @@
 module Throttler
   class CreationService
-    attr_accessor :params,:error
+    attr_accessor :params, :error
 
     def initialize(params)
       self.params = params
@@ -15,7 +15,7 @@ module Throttler
         window: params[:window],
         api_config: params[:api_config],
         scope: params[:scope],
-        )
+      )
       if @record.save
         @record
       else

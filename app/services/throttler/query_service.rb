@@ -16,14 +16,14 @@ module Throttler
         pagination: {
           current_page: page,
           total_pages: (total_count / per_page.to_f).ceil,
-          total_count:total_count,
+          total_count: total_count,
           more: (page * per_page) < total_count,
         }
       }
     end
 
     def get_client_by_token
-      ThrottlerConfig.find_by(auth_token:params[:auth_token])
+      ThrottlerConfig.find_by(auth_token: params[:auth_token])
     end
 
   end

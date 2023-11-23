@@ -18,8 +18,8 @@ module Api
 
         if service.errors.any?
           render json: Loconav::Response::Builder.failure(errors: [{
-                                                            message: service.errors.join(", "),
-                                                          }]), status: :unprocessable_entity
+                                                                     message: service.errors.join(", "),
+                                                                   }]), status: :unprocessable_entity
         else
           render json: Loconav::Response::Builder.success(values: response), status: :ok
         end
