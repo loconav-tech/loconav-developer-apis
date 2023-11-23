@@ -74,7 +74,6 @@ GEM
       msgpack (~> 1.2)
     builder (3.2.4)
     byebug (11.1.3)
-    chronic (0.10.2)
     concurrent-ruby (1.2.2)
     crass (1.0.6)
     date (3.3.4)
@@ -88,8 +87,6 @@ GEM
       dotenv (= 2.8.1)
       railties (>= 3.2)
     erubi (1.12.0)
-    et-orbi (1.2.7)
-      tzinfo
     ethon (0.16.0)
       ffi (>= 1.15.0)
     factory_bot (6.4.1)
@@ -98,9 +95,6 @@ GEM
       factory_bot (~> 6.4)
       railties (>= 5.0.0)
     ffi (1.16.3)
-    fugit (1.9.0)
-      et-orbi (~> 1, >= 1.2.7)
-      raabro (~> 1.4)
     globalid (1.2.1)
       activesupport (>= 6.1)
     i18n (1.14.1)
@@ -156,7 +150,6 @@ GEM
     public_suffix (5.0.4)
     puma (5.6.7)
       nio4r (~> 2.0)
-    raabro (1.4.0)
     racc (1.7.3)
     rack (2.2.8)
     rack-test (2.1.0)
@@ -268,8 +261,6 @@ GEM
       rubocop-capybara (~> 2.17)
       rubocop-factory_bot (~> 2.22)
     ruby-progressbar (1.13.0)
-    rufus-scheduler (3.9.1)
-      fugit (~> 1.1, >= 1.1.6)
     spring (4.1.2)
     stringio (3.0.9)
     thor (1.3.0)
@@ -289,8 +280,6 @@ GEM
     websocket-driver (0.7.6)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    whenever (1.0.0)
-      chronic (>= 0.6.3)
     zeitwerk (2.6.12)
 
 GEM
@@ -333,11 +322,9 @@ DEPENDENCIES
   rubocop-performance
   rubocop-rails
   rubocop-rspec
-  rufus-scheduler (~> 3.7)
   spring
   typhoeus (~> 1.2)
   web-console (>= 4.1.0)
-  whenever
 
 RUBY VERSION
    ruby 3.2.2p53

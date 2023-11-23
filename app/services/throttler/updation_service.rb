@@ -1,7 +1,6 @@
 module Throttler
-  class ThrottlerService
-
-    attr_accessor  :params, :errors
+  class UpdationService
+    attr_accessor :params, :errors
 
     def initialize(params)
       self.params = params
@@ -41,14 +40,14 @@ module Throttler
         api_config_map = throttler_config.api_config
       end
 
-      throttler_config.update(limit: limit, window: window, api_config: api_config_map)
+      throttler_config.update(limit:limit, window:window, api_config: api_config_map)
       throttler_config
     end
 
-    def update_api_config(api_config_map, api_config)
+    private def update_api_config(api_config_map, api_config)
       if api_config.present?
         api_config.each do |config|
-          if config['endpoint'].nil? || config['method'].nil? || config['limit'].nil? || config['window'].nil?
+          if config["endpoint"].nil? || config["method"].nil? || config["limit"].nil? || config["window"].nil?
             errors << "endpoint or method or limit or window not present in config"
             return
           end
@@ -56,6 +55,5 @@ module Throttler
         end
       end
     end
-
   end
 end

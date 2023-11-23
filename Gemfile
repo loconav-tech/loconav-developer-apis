@@ -10,16 +10,16 @@ gem "rails", "~> 7.0.8"
 gem "representable"
 gem "rswag"
 gem "typhoeus", "~> 1.2"
-gem 'redis', '3.3.5'
-gem "pg"
-gem 'activerecord'
-gem 'byebug'
 
 group :development, :test do
+  gem "activerecord"
+  gem "byebug"
   gem "debug", platforms: %i[mri mingw x64_mingw]
   gem "dotenv-rails"
   gem "factory_bot_rails"
   gem "listen", "~> 3.3"
+  gem "pg"
+  gem "redis", "3.3.5"
   gem "rspec-rails", "~> 5.1.2"
   gem "spring"
 end

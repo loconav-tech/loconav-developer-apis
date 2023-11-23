@@ -5,7 +5,7 @@ module Api
       include ThrottlerHelper
 
       before_action :authenticate_account
-      before_action :do_filter_internal
+      before_action :do_throttle
       def index
         request_params = params.permit(Drivers::QueryService::QUERY_PARAMS)
         service = Drivers::QueryService.new(current_account, request_params)

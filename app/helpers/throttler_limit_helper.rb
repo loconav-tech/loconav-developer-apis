@@ -1,6 +1,5 @@
 module ThrottlerLimitHelper
-  HEADER_USER_AUTHENTICATION = "User-Authentication".freeze
-  def rate_limit(key,limit,window)
+  def rate_limit(key, limit, window)
     time = (Time.now.to_f * 1000).to_i
     lua_script = <<~LUA
       local pgname = KEYS[1]
@@ -17,6 +16,6 @@ module ThrottlerLimitHelper
       redis.call('EXPIRE', pgname, expire_time)
       return limit - already_sent
     LUA
-    REDIS.eval(lua_script,keys: [key],argv: [time,limit,window*1000])
+    REDIS.eval(lua_script, keys: [key], argv: [time, limit, window * 1000])
   end
 end
