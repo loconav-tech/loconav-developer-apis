@@ -18,9 +18,7 @@ Rails.application.configure do
       LogConstants::MESSAGE => "full_log",
       LogConstants::RESOURCE_TYPE => FULL_LOG_RESOURCE_TYPE,
       LogConstants::SOURCE => FULL_LOG_SOURCE,
-
-
-      LogConstants::ELAPSED_TIME => event.payload[:duration],
+      LogConstants::ELAPSED_TIME => event.duration.to_i.to_s + "ms".to_s,
 
       remote_ip: event.payload[:remote_ip],
       ip: event.payload[:ip],
@@ -44,6 +42,7 @@ Rails.application.configure do
       LogConstants::REQUEST_PARAM => controller.params.as_json,
       LogConstants::MDC_USER_ID => controller.current_account["id"].to_s,
       LogConstants::RESPONSE_CODE => controller.response.status.to_s,
+      LogConstants::RESOURCE_URL => controller.request.url.to_s,
 
       LogConstants::HEADERS => get_desired_headers(controller),
 
