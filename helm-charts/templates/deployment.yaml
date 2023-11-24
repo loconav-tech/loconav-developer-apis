@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.app.name }}
+  labels:
+    app: {{ .Values.app.name }}
+    group: {{ .Values.app.group }}
+    env: {{ .Values.app.env }}
+  {{- if .Values.annotations }}
+  annotations:
+    {{- toYaml .Values.annotations}}
+  {{- end }}
+
+spec:
+  replicas: {{ .Values.app.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.app.name }}
+      env: {{ .Values.app.env }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app.name }}
+        group: {{ .Values.app.group }}
+        env: {{ .Values.app.env }}
+    spec:
+    {{ if .Values.app.imagePullSecrets }}
+    imagePullSecrets:
+      - name: {{.Values.app.imagePullSecrets.name}}
+    {{ end }}
+    containers:
+      - name: {{ .Values.app.name }}
+        image: {{ .Values.app.container.image }}
+        imagePullPolicy: {{ .Values.app.container.imagePullPolicy }}
+        args:
+          {{- range .Values.app.container.args }}
+          - {{ . }}
+          {{- end }}
+        ports:
+          - containerPort: {{ .Values.app.container.port }}
+        env:
+          {{- range $key, $val := .Values.environment }}
+          - name: {{ $key }}
+            value: {{ $val | quote }}
+          {{- end }}
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+    {{- if .Values.nodeAntiAffinity.enabled }}
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: {{ .Values.nodeAntiAffinity.topologyKey }}
+            labelSelector:
+              matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                    - {{ .Values.app.name }}
+    {{- end }}
+    {{- if .Values.nodeSelector }}
+    nodeSelector:
+      {{- toYaml .Values.nodeSelector | nindent 8 }}
+    {{- end }}
+    {{- if .Values.tolerations }}
+    tolerations:
+      {{- toYaml .Values.tolerations | nindent 8 }}
+    {{- end }}
