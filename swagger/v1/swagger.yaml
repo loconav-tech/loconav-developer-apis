@@ -3,7 +3,19 @@ openapi: 3.0.1
 info:
   title: API V1
   version: v1
-paths: {}
+paths:
+  "/api/v1/drivers":
+    get:
+      summary: list drivers
+      responses:
+        '200':
+          description: successful
+  "/api/v1/vehicle/telematics/last_known":
+    post:
+      summary: last_known vehicle_stat
+      responses:
+        '200':
+          description: successful
 servers:
 - url: https://{defaultHost}
   variables:
