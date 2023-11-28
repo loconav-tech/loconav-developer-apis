@@ -18,7 +18,6 @@ module ThrottlerHelper
         client_map[config.auth_token] = { limit: config.limit, window: config.window, api_config: config.api_config }
       end
     end
-    puts client_map
   end
 
   def do_throttle
