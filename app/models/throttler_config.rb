@@ -31,6 +31,6 @@ class ThrottlerConfig < ApplicationRecord
   end
 
   def load_client_map
-    ThrottlerHelper.client_reload_cron
+    ThrottlerHelper.reload_clients
   end
 end

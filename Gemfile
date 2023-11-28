@@ -3,23 +3,23 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby "3.2.2"
 
+gem "activerecord"
 gem "bootsnap", require: false
+gem "byebug"
 gem "concurrent-ruby"
+gem "pg"
 gem "puma", "~> 5.0"
 gem "rails", "~> 7.0.8"
+gem "redis", "3.3.5"
 gem "representable"
 gem "rswag"
 gem "typhoeus", "~> 1.2"
 
 group :development, :test do
-  gem "activerecord"
-  gem "byebug"
   gem "debug", platforms: %i[mri mingw x64_mingw]
   gem "dotenv-rails"
   gem "factory_bot_rails"
   gem "listen", "~> 3.3"
-  gem "pg"
-  gem "redis", "3.3.5"
   gem "rspec-rails", "~> 5.1.2"
   gem "spring"
 end

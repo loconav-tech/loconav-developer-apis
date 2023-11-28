@@ -9,11 +9,11 @@ module ThrottlerHelper
   mattr_accessor :client_map
   self.client_map = {}
 
-  def self.client_reload_cron
+  def self.reload_clients
     configs = ThrottlerConfig.all
     configs.each do |config|
       if config.scope == "global"
-        client_map["global api config"] = { api_config: config.api_config }
+        client_map["global_api_config"] = { api_config: config.api_config }
       else
         client_map[config.auth_token] = { limit: config.limit, window: config.window, api_config: config.api_config }
       end
@@ -27,6 +27,10 @@ module ThrottlerHelper
     if limit_available <= 0
       render json: Loconav::Response::Builder.failure(errors: ["TOO MANY REQUESTS"]), status: :too_many_requests
     end
+    set_throttler_headers(throttle_config,limit_available)
+  end
+
+  private def set_throttler_headers(throttle_config,limit_available)
     response.headers["X-Rate-Limit-Remaining"] = limit_available.to_s
     response.headers["X-Rate-Limit-Limit"] = throttle_config[:limit].to_s
   end
@@ -34,32 +38,13 @@ module ThrottlerHelper
   private def get_config(key)
     http_method = request.method.to_s
     endpoint = request.path
-    if client_map[key].present?
-      client = client_map[key]
-      if client[:api_config]["#{endpoint},#{http_method}"].present?
-        api_config = client[:api_config]["#{endpoint},#{http_method}"]
-        limit = api_config["limit"]
-        window = api_config["window"]
-        redis_key = "#{key}#{endpoint}"
-      else
-        limit = client[:limit]
-        window = client[:window]
-        redis_key = key
-      end
-    elsif client_map["global api config"].present? && client_map["global api config"][:api_config]["#{endpoint},#{http_method}"].present?
-      api_config = client_map["global api config"][:api_config]["#{endpoint},#{http_method}"]
-      limit = api_config["limit"]
-      window = api_config["window"]
-      redis_key = "#{http_method}#{endpoint}"
-    else
-      limit = DEFAULT_THROTTLING_LIMIT
-      window = DEFAULT_THROTTLING_WINDOW
-      redis_key = key
-    end
-    {
-      limit: limit,
-      window: window,
-      redis_key: redis_key,
-    }
+    client = client_map[key] || client_map["global_api_config"]
+    api_config = client&.dig(:api_config, "#{endpoint},#{http_method}")
+
+    limit = api_config&.fetch("limit") || (client&.fetch(:limit) || DEFAULT_THROTTLING_LIMIT)
+    window = api_config&.fetch("window") || (client&.fetch(:window) || DEFAULT_THROTTLING_WINDOW)
+    redis_key = api_config ? "#{key}#{endpoint}" : key
+
+    { limit: limit, window: window, redis_key: redis_key }
   end
 end
