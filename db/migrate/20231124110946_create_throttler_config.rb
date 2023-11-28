@@ -7,6 +7,7 @@ class CreateThrottlerConfig < ActiveRecord::Migration[7.0]
       t.bigint :limit
       t.bigint :window
       t.jsonb :api_config
+      t.string :scope
       t.timestamps
     end
   end

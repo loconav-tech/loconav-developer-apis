@@ -8,22 +8,26 @@ class ThrottlerConfig < ApplicationRecord
   validates :client_id, :client_type, :auth_token, :limit, :window, presence: true, if: -> {
                                                                                           scope == "local"
                                                                                         }, on: :create
-  validate :api_configs, on: :create
+  before_create :update_api_config
 
   after_commit :load_client_map
 
-  private def api_configs
+  private def update_api_config
     api_config_map = {}
     if api_config.present?
       api_config.each do |config|
-        if config["endpoint"].nil? || config["method"].nil? || config["limit"].nil? || config["window"].nil?
-          errors.add(:base, "endpoint or method or limit or window not present in config")
-          return
-        end
+        validate_config(config)
         api_config_map["#{config['endpoint']},#{config['method']}"] = config
       end
     end
     self.api_config = api_config_map
+  end
+
+  private def validate_config(config)
+    if config.values_at("endpoint", "method", "limit", "window").any?(&:nil?)
+      errors.add(:base, "endpoint or method or limit or window not present in config")
+      throw(:abort)
+    end
   end
 
   def load_client_map

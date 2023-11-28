@@ -13,6 +13,7 @@ module Api
       end
 
       def update
+        params.require(:scope)
         service = Throttler::UpdationService.new(params)
         response = service.update_config
 
