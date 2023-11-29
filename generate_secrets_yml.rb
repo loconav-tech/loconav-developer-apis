@@ -1,7 +1,7 @@
 require 'erb'
 require 'json'
 
-path = "/home/app/line-haul/config"
+path = "/home/app/loconav-developer-apis/config/template"
 
 files = %w( .env )
 
