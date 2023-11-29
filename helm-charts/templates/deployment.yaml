@@ -24,23 +24,23 @@ spec:
         group: {{ .Values.app.group }}
         env: {{ .Values.app.env }}
     spec:
-    {{ if .Values.app.imagePullSecrets }}
-    imagePullSecrets:
-      - name: {{.Values.app.imagePullSecrets.name}}
-    {{ end }}
-    containers:
-      - name: {{ .Values.app.name }}
-        image: {{ .Values.app.container.image }}
-        imagePullPolicy: {{ .Values.app.container.imagePullPolicy }}
-        ports:
-          - containerPort: {{ .Values.app.container.port }}
-        env:
-          {{- range $key, $val := .Values.environment }}
-          - name: {{ $key }}
-            value: {{ $val | quote }}
-          {{- end }}
-        resources:
-          {{- toYaml .Values.resources | nindent 12 }}
+      {{ if .Values.app.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{.Values.app.imagePullSecrets.name}}
+      {{ end }}
+      containers:
+        - name: {{ .Values.app.name }}
+          image: {{ .Values.app.container.image }}
+          imagePullPolicy: {{ .Values.app.container.imagePullPolicy }}
+          ports:
+            - containerPort: {{ .Values.app.container.port }}
+          env:
+            {{- range $key, $val := .Values.environment }}
+            - name: {{ $key }}
+              value: {{ $val | quote }}
+            {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
     {{- if .Values.nodeAntiAffinity.enabled }}
     affinity:
       podAntiAffinity:
