@@ -36,6 +36,7 @@ module Linehaul
         FETCH_VEHICLE_SENSOR_URL + "?page=" + pagination[:page].to_s + "&per_page=" + pagination[:per_page].to_s,
         headers: {
           Authorization: auth_token,
+
         },
         body: build_sensor_details_request(vehicles),
         timeout: TIMEOUT,

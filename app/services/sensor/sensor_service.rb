@@ -37,7 +37,7 @@ module Sensor
     end
 
     def get_default_sensor
-      ["gps"]
+      ["speed", "ignition", "orientation", "current_location_coordinates"]
     end
   end
 end

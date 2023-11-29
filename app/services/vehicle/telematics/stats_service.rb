@@ -16,7 +16,8 @@ module Vehicle
 
       def run!
         validate!
-        fetch_stats if errors.empty?
+        validate_sensors
+        fetch_stats
       end
 
       private def validate!
@@ -25,6 +26,8 @@ module Vehicle
       end
 
       private def fetch_stats
+        return if errors.empty?
+
         success, response = Linehaul::VehicleService.new(auth_token).fetch_vehicle_sensor_details(vehicles, pagination)
         (handle_errors(response) && return) unless success
 
