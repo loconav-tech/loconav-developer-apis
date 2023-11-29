@@ -10,6 +10,8 @@ gem "rails", "~> 7.0.8"
 gem "representable"
 gem "rswag"
 gem "typhoeus", "~> 1.2"
+gem 'lograge'
+gem "logstash-event"
 
 group :development, :test do
   gem "debug", platforms: %i[mri mingw x64_mingw]
@@ -31,6 +33,6 @@ end
 source "https://rubygems.pkg.github.com/loconav-tech" do
   gem "loconav-request", "0.2.1"
   gem "loconav-response", "0.2.1"
-  gem "log-core", "0.2.0"
   gem "meta-endpoints", "0.4.1"
+  gem "log-core", "0.2.0"
 end
