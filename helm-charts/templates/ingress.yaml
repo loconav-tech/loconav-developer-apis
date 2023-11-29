@@ -4,7 +4,7 @@ kind: Ingress
 metadata:
   name: {{ .Values.app.ingress.name }}
   annotations:
-  {{ toYaml .Values.app.ingress.annotations | indent 4 }}
+{{ toYaml .Values.app.ingress.annotations | indent 4 }}
 spec:
   {{- if .Values.app.ingress.tlsSecrets }}
   tls:
@@ -17,10 +17,10 @@ spec:
   {{- end }}
   {{- end }}
   rules:
-  {{- range .Values.app.ingress.hosts }}
-- host: {{ . }}
-  http:
-    paths:
+{{- range .Values.app.ingress.hosts }}
+  - host: {{ . }}
+    http:
+      paths:
       - pathType: Prefix
         path: "/"
         backend:
@@ -28,5 +28,5 @@ spec:
             name: {{ $.Values.app.name }}
             port:
               number: {{ $.Values.app.service.port }}
-  {{- end }}
-  {{- end }}
+{{ end }}
+{{- end }}
