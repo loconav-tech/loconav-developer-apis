@@ -1,7 +1,7 @@
 FROM golang:1.18 AS building-configurator
 LABEL stage=building-configurator
 WORKDIR /configurator
-COPY tools/app-configurator /configurator
+COPY ./tools/app-configurator /configurator
 RUN make configurator
 
 FROM ruby:3.2.2
