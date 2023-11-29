@@ -39,6 +39,16 @@ pipeline {
          dockerLogin()
       }
     }
+     stage('Clone Configurator Repo'){
+          steps{
+            sh """
+              rm -rf tools
+              mkdir -p tools
+              cd tools && git clone --depth 1 git@github.com:loconav-tech/app-configurator
+              cd ..
+            """
+          }
+        }
     stage("Docker build and push") {
       steps {
         sh """
