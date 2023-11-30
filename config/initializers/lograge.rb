@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FULL_LOG_HEADERS = Rails.application.secrets.full_log_headers
+FULL_LOG_HEADERS = Rails.application.secrets.full_log_headers.split
 FULL_LOG_RESOURCE_TYPE = Rails.application.secrets.full_log_resource_type
 FULL_LOG_SOURCE = Rails.application.secrets.full_log_source
 
