@@ -1,0 +1,9 @@
+development:
+  host: ''
+  database: loconav_developer_apis
+  adapter: postgresql
+  pool: 5
+  timeout: 5000
+  encoding: unicode
+  user: loconav
+  password: loconav

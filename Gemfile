@@ -3,10 +3,14 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby "3.2.2"
 
+gem "activerecord"
 gem "bootsnap", require: false
+gem "byebug"
 gem "concurrent-ruby"
+gem "pg"
 gem "puma", "~> 5.0"
 gem "rails", "~> 7.0.8"
+gem "redis", "3.3.5"
 gem "representable"
 gem "rswag"
 gem "typhoeus", "~> 1.2"

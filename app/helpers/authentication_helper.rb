@@ -1,7 +1,7 @@
 module AuthenticationHelper
   extend ActiveSupport::Concern
 
-  HEADER_USER_AUTHENTICATION = "User-Authentication".freeze
+  HEADER_USER_AUTHENTICATION = Rails.application.secrets.header_user_authentication
 
   def authenticate_account
     unless valid_token?
