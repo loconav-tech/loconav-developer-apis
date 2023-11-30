@@ -47,10 +47,9 @@ Rails.application.configure do
   def get_desired_headers(controller)
     desired_header = {}
 
-    FULL_LOG_HEADERS.each do |header|
-      if controller.request.headers[header].present?
-        desired_header[header.to_sym] = controller.request.headers[header]
-      end
+    header = FULL_LOG_HEADERS
+    if controller.request.headers[header].present?
+      desired_header[header.to_sym] = controller.request.headers[header]
     end
     desired_header.as_json
   end
