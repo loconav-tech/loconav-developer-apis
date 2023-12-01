@@ -16,7 +16,11 @@ module AuthenticationHelper
   end
 
   def current_account
-    @current_account ||= Linehaul::AuthService.new(auth_token).fetch_account
+    begin
+      @current_account ||= Linehaul::AuthService.new(auth_token).fetch_account
+    rescue
+      nil
+    end
   end
 
   def auth_token
