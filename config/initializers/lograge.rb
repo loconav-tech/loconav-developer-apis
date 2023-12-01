@@ -44,11 +44,9 @@ Rails.application.configure do
   end
 
   def get_user_id(controller)
-    if controller.current_account.present?
-      controller.current_account["id"].to_s
-    else
-      nil
-    end
+    controller.current_account["id"].to_s
+  rescue StandardError
+    nil
   end
 
   def get_desired_headers(controller)
