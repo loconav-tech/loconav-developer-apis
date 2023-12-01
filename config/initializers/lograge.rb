@@ -36,12 +36,19 @@ Rails.application.configure do
       :httpMethod => controller.request.request_method.to_s,
       :resourceURI => controller.request.fullpath.to_s,
       :requestParam => controller.params.as_json,
-      :"User-Id" => controller.current_account["id"].to_s,
+      :"User-Id" => get_user_id(controller),
       :responseCode => controller.response.status.to_s,
       :resourceURL => controller.request.url.to_s,
       :headers => get_desired_headers(controller),
-
     }
+  end
+
+  def get_user_id(controller)
+    if controller.current_account.present?
+      controller.current_account["id"].to_s
+    else
+      nil
+    end
   end
 
   def get_desired_headers(controller)
