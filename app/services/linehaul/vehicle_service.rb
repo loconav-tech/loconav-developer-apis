@@ -11,6 +11,7 @@ module Linehaul
     FETCH_VEHICLE_MOTION_URL = LINEHAUL_BASE_URL + "/api/v5/partner/vehicles?fetch_motion_status=true"
     FETCH_VEHICLE_SENSOR_URL = LINEHAUL_BASE_URL + "/api/v5/trucks/sensors/current_values"
     ERROR_MSG_VEHICLE_LITE = "Error fetching data for vehicles".freeze
+    FETCH_VT_LOOKUP_URL = LINEHAUL_BASE_URL + "/api/v5/vt/lookup/"
 
     attr_accessor :auth_token
 
@@ -42,6 +43,17 @@ module Linehaul
         timeout: TIMEOUT,
         connecttimeout: CONNECTION_TIMEOUT,
         method: :post,
+      ).run
+      parse_response(response)
+    end
+
+    def fetch_vt_lookup
+      response = Typhoeus::Request.new(
+        FETCH_VT_LOOKUP_URL,
+        headers: {
+          Authorization: auth_token,
+        },
+        method: :get,
       ).run
       parse_response(response)
     end
