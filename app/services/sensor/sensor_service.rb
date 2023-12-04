@@ -16,6 +16,8 @@ module Sensor
       sensor_types.each do |type|
         return [false, "Sensor type #{type} not supported"] unless sensor_type_mapping[type]
 
+        get_gps_sensors(sensor) if type == "gps"
+
         sensor << type
 
         sensor_count[sensor_type_mapping[type]] = "sensor"
@@ -37,6 +39,12 @@ module Sensor
     rescue Psych::SyntaxError, Errno::ENOENT => e
       Rails.logger.error "Unable to load or parse sensor.yml file" + e.to_s
       nil
+    end
+
+    def get_gps_sensors(sensor)
+      get_default_sensor.each do |default_sensor|
+        sensor << default_sensor
+      end
     end
 
     def get_default_sensor
