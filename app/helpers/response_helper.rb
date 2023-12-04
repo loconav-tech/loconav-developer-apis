@@ -21,6 +21,6 @@ module ResponseHelper
       "unit": stat["unit"],
       "value": stat["value"],
       "timestamp": stat["timestamp"],
-    }
+    }.delete_if {|key, value| (value.nil? || value == "N/A" || value == "") }
   end
 end

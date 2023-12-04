@@ -16,7 +16,8 @@ module Vehicle
 
       def run!
         validate!
-        fetch_stats if errors.empty?
+        fetch_sensors
+        fetch_stats
       end
 
       private def validate!
@@ -25,7 +26,9 @@ module Vehicle
       end
 
       private def fetch_stats
-        success, response = Linehaul::VehicleService.new(auth_token).fetch_vehicle_sensor_details(vehicles, pagination)
+        return unless errors.empty?
+
+        success, response = Linehaul::VehicleService.new(auth_token).fetch_vehicle_sensor_details(vehicles, sensors, pagination)
         (handle_errors(response) && return) unless success
 
         if response["data"].present? && response["data"]["vehicles"].present? && response["data"]["pagination"].present?
@@ -45,11 +48,13 @@ module Vehicle
             vehicle_number: vehicle["vehicle_number"],
             vehicle_id: vehicle["vehicle_id"],
           }.merge(
+
             sensors.each_with_object({}) do |sensor, extracted|
-              if sensor == "gps"
-                extracted[sensor] = Sensor::GpsSensor.new(vehicle, sensors).format_gps_stats
+              if ["speed", "ignition", "orientation", "current_location_coordinates","gps"].include?(sensor)
+                extracted["gps"] = Sensor::GpsSensor.new(vehicle, sensors).format_gps_stats
               else
                 next unless vehicle.key?(sensor)
+                next if vehicle[sensor] == true
                 sensor_data = vehicle[sensor]
                 extracted[sensor] = format_data(sensor_data)
               end
