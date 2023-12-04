@@ -14,12 +14,8 @@ gem "redis", "3.3.5"
 gem "representable"
 gem "rswag"
 gem "typhoeus", "~> 1.2"
-<<<<<<< HEAD
 gem 'lograge'
 gem "logstash-event"
-=======
-gem "byebug"
->>>>>>> af9812cba67a616fb627e94a069a40dcda9f1bf8
 
 group :development, :test do
   gem "debug", platforms: %i[mri mingw x64_mingw]
