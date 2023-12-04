@@ -14,7 +14,7 @@ Rails.application.configure do
       process_id: Process.pid,
       request_id: event.payload[:headers]["action_dispatch.request_id"],
       :requestStartTime => Time.now.to_i,
-      :log_message => "full_log",
+      :message => "full_log",
       :resourceType => FULL_LOG_RESOURCE_TYPE,
       :source => FULL_LOG_SOURCE,
       :elapsedTime => event.duration.to_i.to_s + "ms".to_s,
