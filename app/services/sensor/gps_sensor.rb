@@ -25,7 +25,7 @@ module Sensor
                                  "unit": "degrees",
                                  "value": vehicle["current_location_coordinates"]["value"].first,
                                  "timestamp": vehicle["current_location_coordinates"]["timestamp"],
-                               }
+                               },
                              })
       coordinate_stat.merge!({
                                long: {
@@ -34,7 +34,7 @@ module Sensor
                                  "unit": "degrees",
                                  "value": vehicle["current_location_coordinates"]["value"].second,
                                  "timestamp": vehicle["current_location_coordinates"]["timestamp"],
-                               }
+                               },
                              })
       coordinate_stat
     end
