@@ -6,7 +6,7 @@ module Vehicle
 
       attr_accessor :auth_token, :pagination, :vehicles, :sensors, :error_code, :errors
 
-      GPS_SENSORS = ["speed", "ignition", "orientation", "current_location_coordinates","gps"].freeze
+      GPS_SENSORS = ["speed", "ignition", "orientation", "current_location_coordinates", "gps"].freeze
 
       def initialize(auth_token, vehicles, sensors, pagination)
         self.auth_token = auth_token
