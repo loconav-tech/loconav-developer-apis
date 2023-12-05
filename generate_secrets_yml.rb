@@ -3,7 +3,7 @@ require 'json'
 
 path = "/home/app/loconav-developer-apis/config/template"
 
-files = %w( .env )
+files = %w( .env log_core.yml )
 
 files.each do |name|
   File.open("#{path}/#{name}", 'w') do |f|
