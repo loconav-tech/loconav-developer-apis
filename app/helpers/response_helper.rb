@@ -14,7 +14,7 @@ module ResponseHelper
     raise klass, error_msg
   end
 
-  private def format_data(stat)
+  private def format_stats_response(stat)
     {
       "display_name": stat["display_name"],
       "description": stat["description"],

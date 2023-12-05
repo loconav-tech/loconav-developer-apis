@@ -6,6 +6,8 @@ module Vehicle
 
       attr_accessor :auth_token, :pagination, :vehicles, :sensors, :error_code, :errors
 
+      GPS_SENSORS = ["speed", "ignition", "orientation", "current_location_coordinates","gps"].freeze
+
       def initialize(auth_token, vehicles, sensors, pagination)
         self.auth_token = auth_token
         self.pagination = pagination
@@ -48,18 +50,17 @@ module Vehicle
             vehicle_number: vehicle["vehicle_number"],
             vehicle_id: vehicle["vehicle_id"],
           }.merge(
-
             sensors.each_with_object({}) do |sensor, extracted|
-              if ["speed", "ignition", "orientation", "current_location_coordinates","gps"].include?(sensor)
+              if GPS_SENSORS.include?(sensor)
                 extracted["gps"] = Sensor::GpsSensor.new(vehicle, sensors).format_gps_stats
               else
                 next unless vehicle.key?(sensor)
                 next if vehicle[sensor] == true
                 sensor_data = vehicle[sensor]
-                extracted[sensor] = format_data(sensor_data)
+                extracted[sensor] = format_stats_response(sensor_data)
               end
             end,
-          )
+          ).compact
         end
       end
 
