@@ -7,7 +7,7 @@ module Throttler
     end
 
     def create_client
-      @record = ThrottlerConfig.new(
+      record = ThrottlerConfig.new(
         client_id: params[:client_id],
         client_type: params[:client_type],
         auth_token: params[:auth_token],
@@ -16,10 +16,10 @@ module Throttler
         api_config: params[:api_config],
         scope: params[:scope],
       )
-      if @record.save
-        @record
+      if record.save
+        record
       else
-        self.error = @record.errors.full_messages
+        self.error = record.errors.full_messages
       end
     end
 

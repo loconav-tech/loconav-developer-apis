@@ -5,7 +5,6 @@ ruby "3.2.2"
 
 gem "activerecord"
 gem "bootsnap", require: false
-gem "byebug"
 gem "concurrent-ruby"
 gem "pg"
 gem "puma", "~> 5.0"
@@ -16,6 +15,7 @@ gem "rswag"
 gem "typhoeus", "~> 1.2"
 
 group :development, :test do
+  gem "byebug"
   gem "debug", platforms: %i[mri mingw x64_mingw]
   gem "dotenv-rails"
   gem "factory_bot_rails"

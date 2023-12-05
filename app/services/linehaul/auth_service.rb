@@ -25,6 +25,7 @@ module Linehaul
         connecttimeout: CONNECTION_TIMEOUT,
         method: :get,
       ).run
+      return false unless response.success?
       response = respond(response, InvalidAuth, INVALID_AUTH_ERROR_MSG)
       response["data"]
     end
