@@ -1,5 +1,5 @@
 module Api
-  module V1
+  module Vt
     class VtDataController < ApplicationController
       include AuthenticationHelper
 
