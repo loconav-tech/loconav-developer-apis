@@ -103,7 +103,7 @@ GEM
     irb (1.10.0)
       rdoc
       reline (>= 0.3.8)
-    json (2.7.0)
+    json (2.7.1)
     json-schema (4.1.1)
       addressable (>= 2.8)
     language_server-protocol (3.17.0.3)
@@ -188,10 +188,10 @@ GEM
     rb-fsevent (0.11.2)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
-    rdoc (6.6.0)
+    rdoc (6.6.1)
       psych (>= 4.0.0)
     redis (3.3.5)
-    regexp_parser (2.8.2)
+    regexp_parser (2.8.3)
     reline (0.4.1)
       io-console (~> 0.5)
     representable (3.2.0)
@@ -287,6 +287,8 @@ GEM
 GEM
   remote: https://rubygems.pkg.github.com/loconav-tech/
   specs:
+    apollo-vt-client (0.4.2)
+      typhoeus (~> 1.0, >= 1.0.1)
     loconav-request (0.2.1)
     loconav-response (0.2.1)
     log-core (0.2.0)
@@ -302,6 +304,7 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord
+  apollo-vt-client (= 0.4.2)!
   bootsnap
   byebug
   concurrent-ruby
