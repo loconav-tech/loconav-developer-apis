@@ -8,5 +8,10 @@ Rails.application.routes.draw do
       resources :vod, only: %i[index create], controller: "vt_vod"
       resources :lookups, only: [:index], controller: "vt_data"
     end
+    namespace :vt do
+      resources :livestream, only: %i[index create update destroy], controller: "vt_livestream"
+      resources :vod, only: %i[index create], controller: "vt_vod"
+      resources :lookups, only: [:index], controller: "vt_data"
+    end
   end
 end
