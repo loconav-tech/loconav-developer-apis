@@ -14,8 +14,7 @@ module Api
           status_code = to_status(service)
           response = if service.errors.any?
                        Loconav::Response::Builder.failure(errors: [{ message: service.errors.join(", "),
-                                                                     code: status_code,
-                                                                   }])
+                                                                     code: status_code }])
                      else
                        Loconav::Response::Builder.success(values: data)
                      end
@@ -24,7 +23,7 @@ module Api
 
         private def to_status(service)
           if service.error_code
-            if service.error_code.in?(%i[ ])
+            if service.error_code.in?(%i[])
               :bad_request
             elsif service.error_code.in?(%i[technical_issue data_not_found])
               :unprocessable_entity

@@ -1,9 +1,9 @@
-# frozen_string_literal: true
 module Vehicle
   module Telematics
     class VtDataService
-
-      include UtilHelper, ResponseHelper, VtHelper
+      include VtHelper
+      include ResponseHelper
+      include UtilHelper
 
       attr_accessor :auth_token, :pagination, :vehicles, :error_code, :errors
 

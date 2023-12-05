@@ -1,7 +1,8 @@
 module Vehicle
   module Telematics
     class StatsService
-      include UtilHelper, ResponseHelper
+      include ResponseHelper
+      include UtilHelper
       QUERY_PARAMS = [vehicleIds: [], sensors: []].freeze
 
       attr_accessor :auth_token, :pagination, :vehicles, :sensors, :error_code, :errors
@@ -28,8 +29,9 @@ module Vehicle
       private def fetch_stats
         return unless errors.empty?
 
-        success, response = Linehaul::VehicleService.new(auth_token).fetch_vehicle_sensor_details(vehicles, sensors, pagination)
-        (handle_errors(response) && return) unless success
+        success, response = Linehaul::VehicleService.new(auth_token).fetch_vehicle_sensor_details(vehicles, sensors,
+                                                                                                  pagination)
+        handle_errors(response) && return unless success
 
         if response["data"].present? && response["data"]["vehicles"].present? && response["data"]["pagination"].present?
           if errors.empty?
@@ -48,13 +50,13 @@ module Vehicle
             vehicle_number: vehicle["vehicle_number"],
             vehicle_id: vehicle["vehicle_id"],
           }.merge(
-
             sensors.each_with_object({}) do |sensor, extracted|
-              if ["speed", "ignition", "orientation", "current_location_coordinates","gps"].include?(sensor)
+              if ["speed", "ignition", "orientation", "current_location_coordinates", "gps"].include?(sensor)
                 extracted["gps"] = Sensor::GpsSensor.new(vehicle, sensors).format_gps_stats
               else
                 next unless vehicle.key?(sensor)
                 next if vehicle[sensor] == true
+
                 sensor_data = vehicle[sensor]
                 extracted[sensor] = format_data(sensor_data)
               end
@@ -65,7 +67,8 @@ module Vehicle
 
       private def fetch_sensors
         success, response = Sensor::SensorService.new(sensors).fetch_sensors
-        (handle_errors(response) && return) unless success
+        handle_errors(response) && return unless success
+
         self.sensors = response
       end
 

@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-
   namespace :api do
     namespace :v1 do
       namespace :vt do
@@ -13,10 +12,10 @@ Rails.application.routes.draw do
       resources :livestream, only: %i[index create update destroy], controller: "vt_livestream"
       resources :vod, only: %i[index create], controller: "vt_vod"
       resources :lookups, only: [:index], controller: "vt_data"
-      resources :throttler, only: [:index, :create] do
+      resources :throttler, only: %i[index create] do
         collection do
           get ":auth_token", action: :get_by_auth_token
-          put "",action: :update
+          put "", action: :update
         end
       end
     end

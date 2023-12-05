@@ -17,7 +17,7 @@ module Throttler
 
       return if errors.any?
 
-      throttler_config.update(limit: limit, window: window, api_config: api_config_map)
+      throttler_config.update(limit:, window:, api_config: api_config_map)
       throttler_config
     end
 
@@ -48,7 +48,8 @@ module Throttler
     end
 
     private def validate_api_config(config)
-      errors << "endpoint or method or limit or window not present in config" if config.values_at("endpoint", "method", "limit", "window").any?(&:nil?)
+      errors << "endpoint or method or limit or window not present in config" if config.values_at("endpoint", "method",
+                                                                                                  "limit", "window").any?(&:nil?)
     end
   end
 end

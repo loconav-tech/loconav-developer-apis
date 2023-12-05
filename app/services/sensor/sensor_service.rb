@@ -21,7 +21,7 @@ module Sensor
         sensor << type
 
         sensor_count[sensor_type_mapping[type]] = "sensor"
-        return [false,"Only 3 sensors supported at a time"] if sensor_count.size > 3
+        return [false, "Only 3 sensors supported at a time"] if sensor_count.size > 3
       end
       [true, sensor]
     end
@@ -48,7 +48,7 @@ module Sensor
     end
 
     def get_default_sensor
-      ["speed", "ignition", "orientation", "current_location_coordinates","gps"]
+      ["speed", "ignition", "orientation", "current_location_coordinates", "gps"]
     end
   end
 end

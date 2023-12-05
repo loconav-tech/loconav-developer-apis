@@ -39,7 +39,7 @@ module Linehaul
           Authorization: auth_token,
           "Content-Type": "application/json",
         },
-        body: build_sensor_details_request(vehicles,sensors).to_json,
+        body: build_sensor_details_request(vehicles, sensors).to_json,
         timeout: TIMEOUT,
         connecttimeout: CONNECTION_TIMEOUT,
         method: :post,

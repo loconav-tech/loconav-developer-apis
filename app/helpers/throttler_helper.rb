@@ -27,10 +27,10 @@ module ThrottlerHelper
     if limit_available <= 0
       render json: Loconav::Response::Builder.failure(errors: ["TOO MANY REQUESTS"]), status: :too_many_requests
     end
-    set_throttler_headers(throttle_config,limit_available)
+    set_throttler_headers(throttle_config, limit_available)
   end
 
-  private def set_throttler_headers(throttle_config,limit_available)
+  private def set_throttler_headers(throttle_config, limit_available)
     response.headers["X-Rate-Limit-Remaining"] = limit_available.to_s
     response.headers["X-Rate-Limit-Limit"] = throttle_config[:limit].to_s
   end
@@ -45,6 +45,6 @@ module ThrottlerHelper
     window = api_config&.fetch("window") || (client&.fetch(:window) || DEFAULT_THROTTLING_WINDOW)
     redis_key = api_config ? "#{key}#{endpoint}" : key
 
-    { limit: limit, window: window, redis_key: redis_key }
+    { limit:, window:, redis_key: }
   end
 end

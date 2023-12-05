@@ -22,6 +22,5 @@ module Throttler
         self.error = @record.errors.full_messages
       end
     end
-
   end
 end

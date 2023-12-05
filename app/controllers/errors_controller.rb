@@ -1,5 +1,4 @@
 class ErrorsController < ApplicationController
-
   def not_found
     response = Loconav::Response::Builder.failure(errors: [{
                                                              message: "No API available",

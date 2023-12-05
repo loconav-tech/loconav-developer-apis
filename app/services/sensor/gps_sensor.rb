@@ -12,7 +12,7 @@ module Sensor
       gps_stats.merge!({ speed: format_data(vehicle["speed"]) }) if vehicle["speed"].present?
       gps_stats.merge!({ ignition: format_data(vehicle["ignition"]) }) if vehicle["ignition"].present?
       gps_stats.merge!({ orientation: format_data(vehicle["orientation"]) }) if vehicle["orientation"].present?
-      gps_stats.merge!({current_location_coordinates: fetch_current_coordinates}) if vehicle["current_location_coordinates"].present?
+      gps_stats.merge!({ current_location_coordinates: fetch_current_coordinates }) if vehicle["current_location_coordinates"].present?
       gps_stats
     end
 
