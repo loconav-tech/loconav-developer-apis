@@ -11,13 +11,18 @@ module Sensor
       success, response = validate!
       return [success, response] unless success
 
-      sensor = Hash.new { |hash, key| hash[key] = [] }
+      sensor = []
+      sensor_count = {}
       sensor_types.each do |type|
         return [false, "Sensor type #{type} not supported"] unless sensor_type_mapping[type]
 
-        sensor[sensor_type_mapping[type]] << type
-      end
+        get_gps_sensors(sensor) if type == "gps"
 
+        sensor << type
+
+        sensor_count[sensor_type_mapping[type]] = "sensor"
+        return [false,"Only 3 sensors supported at a time"] if sensor_count.size > 3
+      end
       [true, sensor]
     end
 
@@ -36,8 +41,14 @@ module Sensor
       nil
     end
 
+    def get_gps_sensors(sensor)
+      get_default_sensor.each do |default_sensor|
+        sensor << default_sensor
+      end
+    end
+
     def get_default_sensor
-      ["gps"]
+      ["speed", "ignition", "orientation", "current_location_coordinates","gps"]
     end
   end
 end

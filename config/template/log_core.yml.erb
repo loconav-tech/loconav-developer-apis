@@ -1,0 +1,11 @@
+<%
+  def local_config(*keys)
+    ENV[keys.join("_").upcase]
+  end
+%>
+FULL_LOG_ENABLED: <%= local_config('full','log','enabled') %>
+FULL_LOG_EXCLUDE_API_PATHS: <%= local_config('full','log','exclude','api','paths') %>
+full_log_headers: <%= local_config('full','log','headers') %>
+FULL_LOG_INCLUDE_API_PATHS: <%= local_config('full','log','include','api','paths') %>
+FULL_LOG_RESOURCE_TYPE: <%= local_config('full','log','resource','type') %>
+FULL_LOG_SOURCE: <%= local_config('full','log','source') %>
