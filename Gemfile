@@ -22,7 +22,7 @@ group :development, :test do
   gem "dotenv-rails"
   gem "factory_bot_rails"
   gem "listen", "~> 3.3"
-  gem "rspec-rails", "~> 5.1.2"
+  gem 'rspec-rails', '~> 3.x'
   gem "spring"
 end
 

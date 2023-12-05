@@ -16,6 +16,12 @@ paths:
       responses:
         '200':
           description: successful
+  "/api/v1/lookups":
+    get:
+      summary: vt lookup list
+      responses:
+        '200':
+          description: successful
 servers:
 - url: https://{defaultHost}
   variables:
