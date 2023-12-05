@@ -18,6 +18,7 @@ module LoconavDeveloperApis
     #
     config.time_zone = "Kolkata"
     # config.eager_load_paths << Rails.root.join("extras")
+    config.exceptions_app = self.routes
 
     # Only loads a smaller set of middleware suitable for API only apps.
     # Middleware like session, flash, cookies can be added back manually.
