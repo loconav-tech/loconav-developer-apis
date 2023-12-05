@@ -30,6 +30,14 @@ RSpec.configure do |config|
               default: 'api.loconav.com'
             }
           }
+        },
+        {
+          url: 'http://{defaultHost}',
+          variables: {
+            defaultHost: {
+              default: 'api.loconav.com'
+            }
+          }
         }
       ]
     }
