@@ -3,7 +3,7 @@ module Vehicle
   module Telematics
     class VtDataService
 
-      include UtilHelper, ResponseHelper
+      include UtilHelper, ResponseHelper, VtHelper
 
       attr_accessor :auth_token, :pagination, :vehicles, :error_code, :errors
 
@@ -13,14 +13,7 @@ module Vehicle
       end
 
       def run!
-        vt_lookup
-      end
-
-      def vt_lookup
-        success, response = Linehaul::VehicleService.new(auth_token).fetch_vt_lookup
-        handle_errors(response) && return unless success
-
-        response
+        vt_lookup_endpoint
       end
 
       private def handle_errors(error_response)

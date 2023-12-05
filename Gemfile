@@ -35,6 +35,7 @@ group :development do
 end
 
 source "https://rubygems.pkg.github.com/loconav-tech" do
+  gem "apollo-vt-client", "0.4.2"
   gem "loconav-request", "0.2.1"
   gem "loconav-response", "0.2.1"
   gem "meta-endpoints", "0.4.1"
