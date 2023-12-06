@@ -8,6 +8,9 @@ global: &global
   host: <%= ENV["LOCONAV_DEVELOPER_APIS_PG_HOST"] ||= '' %>
   username: <%= ENV["LOCONAV_DEVELOPER_APIS_PG_USERNAME"] %>
   password: <%= ENV["LOCONAV_DEVELOPER_APIS_PG_PASSWORD"] %>
+  prepared_statements: false
+  variables:
+    statement_timeout: 10000
 
 production:
   <<: *global

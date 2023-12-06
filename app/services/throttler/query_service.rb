@@ -9,10 +9,10 @@ module Throttler
     def get_all_clients
       page = params[:page].present? ? params[:page].to_i : 1
       per_page = params[:per_page].present? ? params[:per_page].to_i : 10
-      @configs = ThrottlerConfig.limit(per_page).offset((page - 1) * per_page)
+      configs = ThrottlerConfig.limit(per_page).offset((page - 1) * per_page)
       total_count = ThrottlerConfig.count
       {
-        throttler_configs: @configs,
+        throttler_configs: configs,
         pagination: {
           current_page: page,
           total_pages: (total_count / per_page.to_f).ceil,

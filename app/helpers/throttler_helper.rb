@@ -20,14 +20,16 @@ module ThrottlerHelper
     end
   end
 
+  def throttle_client
+    do_throttle if request.headers[HEADER_USER_AUTHENTICATION].present?
+  end
+
   def do_throttle
     key = (Digest::MD5.hexdigest request.headers[HEADER_USER_AUTHENTICATION])
     throttle_config = get_config(key)
     limit_available = rate_limit(throttle_config[:redis_key], throttle_config[:limit], throttle_config[:window])
-    if limit_available <= 0
-      render json: Loconav::Response::Builder.failure(errors: ["TOO MANY REQUESTS"]), status: :too_many_requests
-    end
-    set_throttler_headers(throttle_config, limit_available)
+    render json: Loconav::Response::Builder.failure(errors: ["TOO MANY REQUESTS"]), status: :too_many_requests if limit_available <= 0
+    set_throttler_headers(throttle_config,limit_available)
   end
 
   private def set_throttler_headers(throttle_config, limit_available)
