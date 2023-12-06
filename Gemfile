@@ -15,6 +15,7 @@ gem "redis", "3.3.5"
 gem "representable"
 gem "rswag"
 gem "typhoeus", "~> 1.2"
+gem "byebug"
 
 group :development, :test do
   gem "byebug"
