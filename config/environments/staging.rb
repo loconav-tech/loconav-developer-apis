@@ -48,6 +48,8 @@ Rails.application.configure do
 
   config.log_level = :info
   config.logger = Logger.new(STDOUT)
+  config.lograge.formatter = Lograge::Formatters::Logstash.new
+
 
   # Tell Active Support which deprecation messages to disallow.
   config.active_support.disallowed_deprecation_warnings = []
