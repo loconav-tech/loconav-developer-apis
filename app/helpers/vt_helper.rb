@@ -93,12 +93,11 @@ module VtHelper
     result
   end
 
-  def vt_lookup_endpoint
+  def vt_lookups
     api_instance = ApolloVtClient::V1Api.new
     begin
       result = api_instance.v1_lookups_list
     rescue ApolloVtClient::ApiError => e
-      status e.code.to_i
       return JSON.parse(e.response_body)
     end
     result

@@ -5,15 +5,14 @@ module Vehicle
 
       include UtilHelper, ResponseHelper, VtHelper
 
-      attr_accessor :auth_token, :pagination, :vehicles, :error_code, :errors
+      attr_accessor :auth_token, :status_code, :errors,
 
-      def initialize(auth_token)
-        self.auth_token = auth_token
-        self.errors = []
-      end
+        def initialize
+          self.errors = []
+        end
 
       def run!
-        vt_lookup_endpoint
+        vt_lookups
       end
 
       private def handle_errors(error_response)
