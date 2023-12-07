@@ -22,7 +22,7 @@ module VtHelper
   end
 
   def set_video_endpoint(params)
-    api_instance = ApolloVtClient::V1Api.new
+    api_instance = ApolloVtClient::V2Api.new
     data_object = {
       device_id: params["device_id"],
       format: params[:format],
@@ -37,9 +37,9 @@ module VtHelper
     end
     data = ApolloVtClient::VOD.new(data_object)
     begin
-      response = api_instance.v1_vod_create(data)
+      response = api_instance.v2_vod_create(data)
     rescue ApolloVtClient::ApiError => e
-      JSON.parse(e.response_body)
+      [e.code, JSON.parse(e.response_body)]
     end
     response
   end
