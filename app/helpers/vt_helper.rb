@@ -1,6 +1,6 @@
 module VtHelper
   def video_endpoint(params)
-    api_instance = ApolloVtClient::V1Api.new
+    api_instance = ApolloVtClient::V2Api.new
     opts = {}
     epoch = params[:is_epoch]
     opts[:device_id] = params[:device_id]
@@ -14,10 +14,9 @@ module VtHelper
     end
     opts[:creator_type] = params["creator_type"]
     begin
-      api_instance.v1_vod_list(epoch, opts)
+      api_instance.v2_vod_list(opts)
     rescue ApolloVtClient::ApiError => e
-      status e.code.to_i
-      JSON.parse(e.response_body)
+      [e.code.to_i, JSON.parse(e.response_body)]
     end
   end
 
