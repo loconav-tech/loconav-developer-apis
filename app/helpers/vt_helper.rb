@@ -1,8 +1,10 @@
 module VtHelper
   def video_endpoint(params)
-    api_instance = ApolloVtClient::V1Api.new
+    api_instance = ApolloVtClient::V2Api.new
     opts = {}
+    opts[:account_uuid] = params[:account_uuid]
     epoch = params[:is_epoch]
+    opts[:epoch] = epoch
     opts[:device_id] = params[:device_id]
     if params[:is_epoch]
       opts[:start_time_epoch] = params["start_time"]
@@ -14,10 +16,10 @@ module VtHelper
     end
     opts[:creator_type] = params["creator_type"]
     begin
-      api_instance.v1_vod_list(epoch, opts)
+      response = api_instance.v2_vod_list(opts)
+      ["200", response.as_json]
     rescue ApolloVtClient::ApiError => e
-      status e.code.to_i
-      JSON.parse(e.response_body)
+      [e.code.to_i, JSON.parse(e.response_body)]
     end
   end
 
