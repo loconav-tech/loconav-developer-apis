@@ -7,9 +7,9 @@ module Vehicle
 
       attr_accessor :auth_token, :status_code, :errors
 
-        def initialize
-          self.errors = []
-        end
+      def initialize
+        self.errors = []
+      end
 
       def run!
         vt_lookups
