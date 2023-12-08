@@ -45,15 +45,16 @@ module VtHelper
   end
 
   def livestream_post_endpoint(params)
+    begin
     api_instance = ApolloVtClient::V1Api.new
     data = ApolloVtClient::StartLiveStream.new({ device_id: params["device_id"], resolution: params[:resolution] })
-    begin
       result = api_instance.v1_livestream_create(data)
+      ["success", result.response]
     rescue ApolloVtClient::ApiError => e
-      status e.code.to_i
-      JSON.parse(e.response_body)
+      [e.code.to_i, JSON.parse(e.response_body)["message"]]
+    rescue StandardError => e
+      ["failed", e.message]
     end
-    result
   end
 
   def livestream_put_endpoint

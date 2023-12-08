@@ -257,6 +257,8 @@ GEM
   specs:
     addressable (2.8.5)
       public_suffix (>= 2.0.2, < 6.0)
+    apollo-vt-client (0.4.2)
+      typhoeus (~> 1.0, >= 1.0.1)
     bindex (0.8.1)
     declarative (0.0.20)
     ethon (0.16.0)
@@ -297,6 +299,7 @@ PLATFORMS
   x86_64-darwin-22
 
 DEPENDENCIES
+  apollo-vt-client (= 0.4.2)!
   bootsnap
   concurrent-ruby
   debug
