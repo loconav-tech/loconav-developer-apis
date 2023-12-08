@@ -20,20 +20,23 @@ module Vehicle
       def create!
         @status_code, response = video_endpoint_v2_post(request_params)
         return response if response["status"]
+
         @pagination = nil
-        handle_errors(response["data"]["errors"]["code"])
+        response["data"]["errors"] do |error|
+          handle_errors(error)
+        end
         response["data"]["errors"]
 
       end
 
       private def handle_errors(error_response)
-        case error_response
+        case error_response["code"]
         when /invalid/
           errors << error_response
         when /not supported/
           errors << error_response
-        when "Data not found"
-          errors << "Data not found"
+        when "required"
+          errors << error_response
           self.error_code = :data_not_found
         else
           errors << "Technical issue, please try again later"

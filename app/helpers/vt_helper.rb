@@ -25,7 +25,7 @@ module VtHelper
     api_instance = ApolloVtClient::V2Api.new
     opts = {}
     epoch = params[:is_epoch]
-    opts[:device_id] = params["device_id"]
+    opts[:device_id] = params["device_id"] if params["device_id"].present?
     if params[:is_epoch]
       opts[:start_time_epoch] = params["start_time"]
       opts[:end_time_epoch] = params["end_time"] if params["end_time"].present?
@@ -43,7 +43,7 @@ module VtHelper
     begin
       [201, api_instance.v2_vod_create(opts, {}).as_json]
     rescue ApolloVtClient::ApiError => e
-      [e.code, JSON.parse(e.response_body)]
+      [e.code.to_i, JSON.parse(e.response_body)]
     end
   end
 
