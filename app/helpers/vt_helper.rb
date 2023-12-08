@@ -21,8 +21,34 @@ module VtHelper
     end
   end
 
-  def set_video_endpoint(params)
+  def video_endpoint_v2_post(params)
     api_instance = ApolloVtClient::V2Api.new
+    opts = {}
+    epoch = params[:is_epoch]
+    opts[:device_id] = params["device_id"]
+    if params[:is_epoch]
+      opts[:start_time_epoch] = params["start_time"]
+      opts[:end_time_epoch] = params["end_time"] if params["end_time"].present?
+      opts[:epoch] = params["is_epoch"]
+    else
+      opts[:start_time] = params["start_time"]
+      opts[:end_time] = params["end_time"] if params["end_time"].present?
+    end
+    opts[:request_type] = params["request_type"]
+    opts[:format] = params["format"]
+    opts[:resolution] = params["resolution"]
+    opts[:duration] = params["duration"] if params["duration"].present?
+    opts[:creator_type] = params["creator_type"] if params["creator_type"].present?
+    opts[:extra_data] = params["extra_data"] if params["extra_data"].present?
+    begin
+      [201, api_instance.v2_vod_create(opts, {}).as_json]
+    rescue ApolloVtClient::ApiError => e
+      [e.code, JSON.parse(e.response_body)]
+    end
+  end
+
+  def set_video_endpoint(params)
+    api_instance = ApolloVtClient::V1Api.new
     data_object = {
       device_id: params["device_id"],
       format: params[:format],
@@ -37,7 +63,7 @@ module VtHelper
     end
     data = ApolloVtClient::VOD.new(data_object)
     begin
-      response = api_instance.v2_vod_create(data)
+      response = api_instance.v1_vod_create(data)
     rescue ApolloVtClient::ApiError => e
       [e.code, JSON.parse(e.response_body)]
     end
@@ -50,7 +76,6 @@ module VtHelper
     begin
       result = api_instance.v1_livestream_create(data)
     rescue ApolloVtClient::ApiError => e
-      status e.code.to_i
       JSON.parse(e.response_body)
     end
     result

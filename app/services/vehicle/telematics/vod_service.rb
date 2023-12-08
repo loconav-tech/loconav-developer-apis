@@ -3,37 +3,12 @@ module Vehicle
     class VodService
       include UtilHelper, ResponseHelper, VtHelper
 
-      CREATE_QUERY_PARAMS = [created_at:,
-                             creator_id:,
-                             creator_type:,
-                             device_id:,
-                             driver:,
-                             duration:,
-                             end_time:,
-                             end_time_epoch:,
-                             epoch:,
-                             extra_data:,
-                             format:,
-                             media:,
-                             request_type:,
-                             start_dtm:,
-                             start_time:,
-                             start_time_epoch:,
-                             status:,
-                             updated_at:,
-                             vehicle_uuid:,
-                             vod_id:].freeze
+      CREATE_QUERY_PARAMS = %i[created_at creator_id creator_type
+                               device_id driver duration end_time end_time_epoch epoch extra_data
+                               format media request_type resolution
+                               start_dtm start_time start_time_epoch status
+                               updated_at vehicle_uuid vod_id ].freeze
 
-      QUERY_PARAMS = [:device_id, :format, :status, :creator_type, :request_type,
-                      :account_uuid,
-                      :vehicle_uuid,
-                      :start_time,
-                      :end_time,
-                      :start_time_epoch,
-                      :end_time_epoch,
-                      :is_epoch,
-                      :page_number,
-                      :page_size].freeze
       attr_accessor :auth_token, :pagination, :status_code, :errors, :request_params
 
       def initialize(request_params)
@@ -43,10 +18,9 @@ module Vehicle
       end
 
       def create!
-        @status_code, response = set_video_endpoint(request_params)
-        @pagination = response["pagination"]
-        response if @status_code
-
+        @status_code, response = video_endpoint_v2_post(request_params)
+        return response if response["status"]
+        @pagination = nil
         handle_errors(response["data"]["errors"]["code"])
         response["data"]["errors"]
 
