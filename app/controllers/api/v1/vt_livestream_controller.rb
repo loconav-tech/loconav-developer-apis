@@ -9,7 +9,7 @@ module Api
 
       def create
         service = Vt::VtLivestreamService.new
-        live_stream_response = service.create_livestream(params)
+        create_response = service.create_livestream(params)
         status_code = to_status(service)
 
         response = if service.errors.any?
@@ -18,17 +18,41 @@ module Api
                                                                    code: status_code,
                                                                  }])
                    else
-                     Loconav::Response::Builder.success(values: live_stream_response)
+                     Loconav::Response::Builder.success(values: create_response)
                    end
         render json: response, status: status_code
       end
 
       def update
         service = Vt::VtLivestreamService.new
+        update_response = service.update_livestream(params)
+        status_code = to_status(service)
+
+        response = if service.errors.any?
+                     Loconav::Response::Builder.failure(errors: [{
+                                                                   message: service.errors.join(", "),
+                                                                   code: status_code,
+                                                                 }])
+                   else
+                     Loconav::Response::Builder.success(values: update_response)
+                   end
+        render json: response, status: status_code
       end
 
       def destroy
         service = Vt::VtLivestreamService.new
+        delete_response = service.delete_livestream(params)
+        status_code = to_status(service)
+
+        response = if service.errors.any?
+                     Loconav::Response::Builder.failure(errors: [{
+                                                                   message: service.errors.join(", "),
+                                                                   code: status_code,
+                                                                 }])
+                   else
+                     Loconav::Response::Builder.success(values: delete_response)
+                   end
+        render json: response, status: status_code
       end
 
       private def to_status(service)
