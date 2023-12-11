@@ -18,6 +18,7 @@ Rails.application.configure do
   config.server_timing = true
 
   config.hosts << "localhost"
+  config.hosts << "linehaul.stg13.loconav.dev"
   config.hosts << "23a9-103-60-196-222.ngrok.io"
 
   # Enable/disable caching. By default caching is disabled.
