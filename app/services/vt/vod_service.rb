@@ -13,15 +13,19 @@ module Vt
                             start_time_epoch end_time_epoch is_epoch
                             page_number page_size].freeze
 
-    attr_accessor :auth_token, :pagination, :status_code, :error_code, :errors, :request_params
+    attr_accessor :auth_token, :pagination, :status_code, :error_code, :errors, :request_params, :current_account
 
-    def initialize(request_params)
+    def initialize(request_params, current_account)
       self.request_params = request_params
       self.status_code = nil
       self.errors = []
+      self.current_account = current_account
     end
 
     def fetch!
+      if current_account.present? && current_account["account"].present? && current_account["account"]["global_account_id"].present?
+        request_params[:account_uuid] = current_account["account"]["global_account_id"]
+      end
       @status_code, response = video_endpoint(request_params)
       return response["data"] if status_code == "success"
 
