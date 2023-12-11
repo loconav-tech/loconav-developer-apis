@@ -9,6 +9,7 @@ module Api
         def index
           service = ::Vt::LivestreamService.new
           fetch_response = service.fetch_livestream(params)
+          status_code = to_status(service)
           response = if service.errors.any?
                        Loconav::Response::Builder.failure(errors: [{
                                                                      message: service.errors.join(", "),
