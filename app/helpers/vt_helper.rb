@@ -118,7 +118,7 @@ module VtHelper
     end
   end
 
-  def livestream_get_endpoint
+  def livestream_get_endpoint(params)
     begin
       api_instance = ApolloVtClient::V1Api.new
       session_id = params["session_id"]
