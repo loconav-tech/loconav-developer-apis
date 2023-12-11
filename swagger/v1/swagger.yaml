@@ -16,9 +16,21 @@ paths:
       responses:
         '200':
           description: successful
-  "/api/v1/lookups":
+  "/api/v1/vt/lookups":
     get:
-      summary: vt lookup list
+      summary: vt lookups
+      responses:
+        '200':
+          description: successful
+  "/api/v1/vt/livestream":
+    post:
+      summary: livestream
+      responses:
+        '200':
+          description: successful
+  "/api/v1/vt/vod":
+    post:
+      summary: vod
       responses:
         '200':
           description: successful
