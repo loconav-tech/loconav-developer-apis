@@ -7,7 +7,7 @@ module Api
         before_action :authenticate_account
 
         def index
-          service = Vehicle::Telematics::VtDataService.new
+          service = ::Vt::DataService.new
           data = service.run!
           status_code = to_status(service)
           response = if service.errors.present?

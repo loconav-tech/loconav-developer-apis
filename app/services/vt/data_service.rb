@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module Vehicle
   module Telematics
-    class VtDataService
+    class DataService
 
       include UtilHelper, ResponseHelper, VtHelper
 
@@ -14,7 +14,6 @@ module Vehicle
       def run!
         vt_lookups
       end
-
     end
   end
 end

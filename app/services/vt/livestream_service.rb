@@ -1,5 +1,5 @@
 module Vt
-  class VtLivestreamService
+  class LivestreamService
 
     include VtHelper
 
