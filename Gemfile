@@ -34,4 +34,5 @@ source "https://rubygems.pkg.github.com/loconav-tech" do
   gem "loconav-response", "0.2.1"
   gem "log-core", "0.2.0"
   gem "meta-endpoints", "0.4.1"
+  gem "apollo-vt-client", "0.4.2"
 end
