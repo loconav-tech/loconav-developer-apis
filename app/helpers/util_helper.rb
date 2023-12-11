@@ -11,4 +11,11 @@ module UtilHelper
       more: total_count > (pagination[:page].to_i * pagination[:per_page].to_i),
     }
   end
+
+  def json_parsable?(json_string)
+    JSON.parse(json_string)
+    true
+  rescue JSON::ParserError => e
+    false
+  end
 end

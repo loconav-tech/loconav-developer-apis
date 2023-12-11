@@ -1,4 +1,6 @@
 module VtHelper
+  include UtilHelper
+
   def video_endpoint(params)
     begin
       api_instance = ApolloVtClient::V2Api.new
@@ -17,9 +19,14 @@ module VtHelper
       end
       opts[:creator_type] = params["creator_type"]
       response = api_instance.v2_vod_list(opts)
-      ["200", response.as_json]
+      ["success", response.as_json]
     rescue ApolloVtClient::ApiError => e
-      [e.code.to_i, JSON.parse(e.response_body)["message"]]
+      error_message = if json_parsable?(e.response_body)
+                        JSON.parse(e.response_body)["message"]
+                      else
+                        e.response_body.slice(0, 100)
+                      end
+      [e.code.to_i, error_message]
     rescue StandardError => e
       ["failed", e.message]
     end

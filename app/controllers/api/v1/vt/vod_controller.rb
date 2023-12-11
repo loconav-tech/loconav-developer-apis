@@ -8,7 +8,10 @@ module Api
           response = service.fetch!
 
           response = if service.errors.present?
-                       Loconav::Response::Builder.failure(errors: response)
+                       Loconav::Response::Builder.failure(errors: [{
+                                                                     message: service.errors.join(", "),
+                                                                     code: service.status_code,
+                                                                   }])
                      else
                        Loconav::Response::Builder.success(values: response, pagination: service.pagination)
                      end
@@ -20,9 +23,12 @@ module Api
           service = ::Vt::VodService.new(request_params)
           response = service.create!
           response = if service.errors.present?
-                       Loconav::Response::Builder.failure(errors: response)
+                       Loconav::Response::Builder.failure(errors: [{
+                                                                     message: service.errors.join(", "),
+                                                                     code: service.status_code,
+                                                                   }])
                      else
-                       Loconav::Response::Builder.success(values: response, pagination: service.pagination)
+                       Loconav::Response::Builder.success(values: response)
                      end
           render json: response, status: service.status_code
         end

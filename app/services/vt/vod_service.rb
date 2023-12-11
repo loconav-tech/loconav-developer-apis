@@ -13,7 +13,7 @@ module Vt
                             start_time_epoch end_time_epoch is_epoch
                             page_number page_size].freeze
 
-    attr_accessor :auth_token, :pagination, :status_code, :errors, :request_params
+    attr_accessor :auth_token, :pagination, :status_code, :error_code, :errors, :request_params
 
     def initialize(request_params)
       self.request_params = request_params
@@ -23,48 +23,46 @@ module Vt
 
     def fetch!
       @status_code, response = video_endpoint(request_params)
-      return response["data"] if response["status"]
+      return response["data"] if status_code == "success"
 
-      handle_errors(response["data"]["errors"].first["code"])
-      response["data"]["errors"]
-    end
-
-    private def handle_errors(error_response)
-      errors << case error_response
-                when /invalid/
-                  error_response
-                when /not supported/
-                  error_response
-                when "Data not found"
-                  "Data not found"
-                else
-                  "Technical issue, please try again later"
-                end
+      error_message = if response["data"] && response["data"]["errors"]&.first["code"].present?
+                        response["data"]["errors"]
+                      else
+                        response
+                      end
+      handle_errors(status_code, error_message)
     end
 
     def create!
       @status_code, response = video_endpoint_v2_post(request_params)
-      return response if response["status"]
+      return response if status_code == "success"
 
-      @pagination = nil
       response["data"]["errors"].each do |error|
-        handle_errors(error)
+        handle_errors(status_code, error)
       end
-      response["data"]["errors"]
     end
 
-    private def handle_errors(error_response)
-      case error_response["code"]
-      when /invalid/
-        errors << error_response
+    private def handle_errors(error_code, error_message)
+      case error_code
+      when 400, "failed"
+        self.error_code = :invalid_request
+        errors << "Invalid request Error: #{error_message}"
       when /not supported/
-        errors << error_response
-      when "required"
-        errors << error_response
-        self.error_code = :data_not_found
-      else
-        errors << "Technical issue, please try again later"
+        self.error_code = :not_supported
+        errors << "Currently not supported Error: #{error_message}"
+      when /Data not found/
+        self.error_code = :not_found
+        errors << "Data not found Error: #{error_message}"
+      when 308
         self.error_code = :technical_issue
+        errors << "Technical issue, please try again later"
+      else
+        self.error_code = :technical_issue
+        errors << if error_message.present?
+                    error_message
+                  else
+                    "Technical issue, please try again later"
+                  end
       end
     end
   end
