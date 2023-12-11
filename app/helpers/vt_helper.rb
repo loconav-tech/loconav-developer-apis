@@ -73,39 +73,43 @@ module VtHelper
   end
 
   def livestream_post_endpoint(params)
-    api_instance = ApolloVtClient::V1Api.new
-    data = ApolloVtClient::StartLiveStream.new({ device_id: params["device_id"], resolution: params[:resolution] })
     begin
+      api_instance = ApolloVtClient::V1Api.new
+      data = ApolloVtClient::StartLiveStream.new({ device_id: params["device_id"], resolution: params[:resolution] })
       result = api_instance.v1_livestream_create(data)
+      ["success", result.response]
     rescue ApolloVtClient::ApiError => e
-      JSON.parse(e.response_body)
+      [e.code.to_i, JSON.parse(e.response_body)["message"]]
+    rescue StandardError => e
+      ["failed", e.message]
     end
-    result
   end
 
-  def livestream_put_endpoint
-    api_instance = ApolloVtClient::V1Api.new
-    session_id = params["session_id"]
-    data = ApolloVtClient::UpdateLiveStream.new({ resolution: params[:resolution], status: params[:status] })
+  def livestream_put_endpoint(params)
     begin
+      api_instance = ApolloVtClient::V1Api.new
+      session_id = params["id"]
+      data = ApolloVtClient::UpdateLiveStream.new({ resolution: params[:resolution], status: params[:status] })
       result = api_instance.v1_livestream_update(session_id, data)
+      ["success", result.response]
     rescue ApolloVtClient::ApiError => e
-      status e.code.to_i
-      JSON.parse(e.response_body)
+      parsed_error = JSON.parse(e.response_body)["message"] if e.response_body.present?
+      [e.code.to_i, parsed_error]
+    rescue StandardError => e
+      ["failed", e.message]
     end
-    result
   end
 
-  def livestream_delete_endpoint
-    api_instance = ApolloVtClient::V1Api.new
-    session_id = params["session_id"]
+  def livestream_delete_endpoint(session_id)
     begin
+      api_instance = ApolloVtClient::V1Api.new
       result = api_instance.v1_livestream_delete(session_id)
+      ["success", result&.response]
     rescue ApolloVtClient::ApiError => e
-      status e.code.to_i
-      JSON.parse(e.response_body)
+      [e.code.to_i, JSON.parse(e.response_body)["message"]]
+    rescue StandardError => e
+      ["failed", e.message]
     end
-    result
   end
 
   def livestream_get_endpoint
