@@ -6,7 +6,20 @@ module Api
 
         before_action :authenticate_account
 
-        def index; end
+        def index
+          service = ::Vt::LivestreamService.new
+          fetch_response = service.fetch_livestream(params)
+          status_code = to_status(service)
+          response = if service.errors.any?
+                       Loconav::Response::Builder.failure(errors: [{
+                                                                     message: service.errors.join(", "),
+                                                                     code: status_code,
+                                                                   }])
+                     else
+                       Loconav::Response::Builder.success(values: fetch_response)
+                     end
+          render json: response, status: status_code
+        end
 
         def create
           service = ::Vt::LivestreamService.new

@@ -9,6 +9,12 @@ module Vt
       self.errors = []
     end
 
+    def fetch_livestream(params)
+      response_code, response = livestream_get_endpoint(params)
+      (handle_errors(response_code, response) && return) unless response_code == "success"
+      response
+    end
+
     def create_livestream(params)
       response_code, response = livestream_post_endpoint(params)
       (handle_errors(response_code, response) && return) unless response_code == "success"
