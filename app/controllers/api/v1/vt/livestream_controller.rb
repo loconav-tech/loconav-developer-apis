@@ -6,22 +6,10 @@ module Api
 
         before_action :authenticate_account
 
-        def index
-          service = Vehicle::Telematics::LiveStreamService.new
-          fetch_response = service.fetch_livestream(params)
-          response = if service.errors.any?
-                       Loconav::Response::Builder.failure(errors: [{
-                                                                     message: service.errors.join(", "),
-                                                                     code: status_code,
-                                                                   }])
-                     else
-                       Loconav::Response::Builder.success(values: fetch_response)
-                     end
-          render json: response, status: status_code
-        end
+        def index; end
 
         def create
-          service = Vehicle::Telematics::LivestreamService.new
+          service = ::Vt::LivestreamService.new
           create_response = service.create_livestream(params)
           status_code = to_status(service)
 
@@ -37,7 +25,7 @@ module Api
         end
 
         def update
-          service = Vehicle::Telematics::LivestreamService.new
+          service = ::Vt::LivestreamService.new
           update_response = service.update_livestream(params)
           status_code = to_status(service)
 
@@ -53,7 +41,7 @@ module Api
         end
 
         def destroy
-          service = Vt::LivestreamService.new
+          service = ::Vt::LivestreamService.new
           delete_response = service.delete_livestream(params)
           status_code = to_status(service)
 

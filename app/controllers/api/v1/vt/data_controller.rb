@@ -7,14 +7,12 @@ module Api
         before_action :authenticate_account
 
         def index
-          service = Vehicle::Telematics::VtDataService.new(
-            current_account["authentication_token"],
-          )
+          service = ::Vt::DataService.new
           data = service.run!
           status_code = to_status(service)
-          response = if service.errors.any?
+          response = if service.errors.present?
                        Loconav::Response::Builder.failure(errors: [{ message: service.errors.join(", "),
-                                                                     code: status_code }])
+                                                                     code: service.status_code }])
                      else
                        Loconav::Response::Builder.success(values: data)
                      end
@@ -22,7 +20,7 @@ module Api
         end
 
         private def to_status(service)
-          if service.error_code
+          if service.status_code
             if service.error_code.in?(%i[])
               :bad_request
             elsif service.error_code.in?(%i[technical_issue data_not_found])
