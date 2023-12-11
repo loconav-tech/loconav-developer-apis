@@ -8,7 +8,7 @@ module Api
       def index; end
 
       def create
-        service = Vt::VtLivestreamService.new
+        service = ::Vt::VtLivestreamService.new
         create_response = service.create_livestream(params)
         status_code = to_status(service)
 
@@ -24,7 +24,7 @@ module Api
       end
 
       def update
-        service = Vt::VtLivestreamService.new
+        service = ::Vt::VtLivestreamService.new
         update_response = service.update_livestream(params)
         status_code = to_status(service)
 
@@ -40,7 +40,7 @@ module Api
       end
 
       def destroy
-        service = Vt::VtLivestreamService.new
+        service = ::Vt::VtLivestreamService.new
         delete_response = service.delete_livestream(params)
         status_code = to_status(service)
 
