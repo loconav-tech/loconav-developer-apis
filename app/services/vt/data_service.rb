@@ -1,19 +1,16 @@
-# frozen_string_literal: true
-module Vehicle
-  module Telematics
-    class DataService
+module Vt
+  class DataService
 
-      include UtilHelper, ResponseHelper, VtHelper
+    include UtilHelper, ResponseHelper, VtHelper
 
-      attr_accessor :auth_token, :status_code, :errors
+    attr_accessor :auth_token, :status_code, :errors
 
-      def initialize
-        self.errors = []
-      end
+    def initialize
+      self.errors = []
+    end
 
-      def run!
-        vt_lookups
-      end
+    def run!
+      vt_lookups
     end
   end
 end

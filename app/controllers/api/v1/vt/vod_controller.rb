@@ -3,7 +3,7 @@ module Api
     module Vt
       class VodController < ApplicationController
         def index
-          request_params = params.permit(Vehicle::Telematics::VodService::FETCH_QUERY_PARAMS)
+          request_params = params.permit(::Vt::VodService::FETCH_QUERY_PARAMS)
           service = ::Vt::VodService.new(request_params)
           response = service.fetch!
 
@@ -16,7 +16,7 @@ module Api
         end
 
         def create
-          request_params = params.permit(Vehicle::Telematics::VodService::CREATE_QUERY_PARAMS)
+          request_params = params.permit(::Vt::VodService::CREATE_QUERY_PARAMS)
           service = ::Vt::VodService.new(request_params)
           response = service.create!
           response = if service.errors.present?
