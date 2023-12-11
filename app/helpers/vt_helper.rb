@@ -84,16 +84,15 @@ module VtHelper
     end
   end
 
-  def livestream_get_endpoint
+  def livestream_get_endpoint(params)
     api_instance = ApolloVtClient::V1Api.new
     session_id = params["session_id"]
     begin
       result = api_instance.v1_livestream_read(session_id)
-    rescue ApolloVtClient::ApiError => e
-      status e.code.to_i
-      JSON.parse(e.response_body)
+      ["success", result&.response]
+    rescue StandardError => e
+      ["failed", e.message]
     end
-    result
   end
 
   def vt_lookup_endpoint
