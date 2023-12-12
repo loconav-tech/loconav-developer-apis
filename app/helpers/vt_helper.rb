@@ -37,25 +37,20 @@ module VtHelper
     begin
       api_instance = ApolloVtClient::V2Api.new
       opts = {}
-      epoch = params[:is_epoch]
-      opts[:device_id] = params["device_id"] if params["device_id"].present?
-      if params[:is_epoch]
-        opts[:start_time_epoch] = params["start_time"]
-        opts[:end_time_epoch] = params["end_time"] if params["end_time"].present?
-        opts[:epoch] = params["is_epoch"]
-      else
-        opts[:start_time] = params["start_time"]
-        opts[:end_time] = params["end_time"] if params["end_time"].present?
-      end
-      opts[:request_type] = params["request_type"]
+      params[:isEpoch] = true
+      opts[:device_id] = params["deviceId"] if params["deviceId"].present?
+      opts[:start_time_epoch] = params["startTime"]
+      opts[:end_time_epoch] = params["endTime"] if params["endTime"].present?
+      opts[:epoch] = params["isEpoch"]
+      opts[:request_type] = params["requestType"]
       opts[:format] = params["format"]
       opts[:resolution] = params["resolution"]
       opts[:duration] = params["duration"] if params["duration"].present?
-      opts[:creator_type] = params["creator_type"] if params["creator_type"].present?
-      opts[:extra_data] = params["extra_data"] if params["extra_data"].present?
-      [201, api_instance.v2_vod_create(opts, {}).as_json]
+      opts[:creator_type] = params["creatorType"] if params["creatorType"].present?
+      opts[:extra_data] = params["extraData"] if params["extraData"].present?
+      ["success", api_instance.v2_vod_create(opts, {}).as_json]
     rescue ApolloVtClient::ApiError => e
-      [e.code.to_i, JSON.parse(e.response_body)["message"]]
+      [e.code.to_i, JSON.parse(e.response_body)]
     rescue StandardError => e
       ["failed", e.message]
     end

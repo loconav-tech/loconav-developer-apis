@@ -2,15 +2,15 @@ module Vt
   class VodService
     include UtilHelper, ResponseHelper, VtHelper
 
-    CREATE_QUERY_PARAMS = %i[created_at creator_id creator_type
-                               device_id driver duration end_time end_time_epoch epoch extra_data
-                               format media request_type resolution
-                               start_dtm start_time start_time_epoch status
-                               updated_at vehicle_uuid vod_id ].freeze
+    CREATE_QUERY_PARAMS = %i[createdAt creatorId creatorType
+                            deviceId driver duration
+                            endTime endTimeEpoch epoch extraData
+                            format media requestType resolution
+                            startDtm startTime startTimeEpoch status
+                            updatedAt vehicleUuid vodId ].freeze
 
     FETCH_QUERY_PARAMS = %i[deviceId format status creatorType requestType
                             vehicleUuid startTime endTime
-                            isEpoch
                             page perPage].freeze
 
     attr_accessor :auth_token, :pagination, :status_code, :error_code, :errors, :request_params, :current_account
