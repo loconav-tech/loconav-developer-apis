@@ -6,18 +6,19 @@ module VtHelper
       api_instance = ApolloVtClient::V2Api.new
       opts = {}
       opts[:account_uuid] = params[:account_uuid]
-      epoch = params[:is_epoch]
+      epoch = params[:isEpoch]
       opts[:epoch] = epoch
-      opts[:device_id] = params[:device_id]
-      if params[:is_epoch]
-        opts[:start_time_epoch] = params["start_time"]
-        opts[:end_time_epoch] = params["end_time"]
-        opts[:epoch] = params["is_epoch"]
+      opts[:device_id] = params[:deviceId]
+      if opts[:epoch]
+        opts[:start_time_epoch] = params["startTime"]
+        opts[:end_time_epoch] = params["endTime"]
       else
-        opts[:start_time] = params["start_time"]
-        opts[:end_time] = params["end_time"]
+        opts[:start_time] = params["startTime"]
+        opts[:end_time] = params["endTime"]
       end
-      opts[:creator_type] = params["creator_type"]
+      opts[:creator_type] = params["creatorType"]
+      opts[:page_number] = params["page"] if params["page"].present?
+      opts[:page_size] = params["perPage"] if params["perPage"].present?
       response = api_instance.v2_vod_list(opts)
       ["success", response.as_json]
     rescue ApolloVtClient::ApiError => e

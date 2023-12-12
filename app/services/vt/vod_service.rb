@@ -8,10 +8,10 @@ module Vt
                                start_dtm start_time start_time_epoch status
                                updated_at vehicle_uuid vod_id ].freeze
 
-    FETCH_QUERY_PARAMS = %i[device_id format status creator_type request_type
-                            account_uuid vehicle_uuid start_time end_time
-                            start_time_epoch end_time_epoch is_epoch
-                            page_number page_size].freeze
+    FETCH_QUERY_PARAMS = %i[deviceId format status creatorType requestType
+                            vehicleUuid startTime endTime
+                            isEpoch
+                            page perPage].freeze
 
     attr_accessor :auth_token, :pagination, :status_code, :error_code, :errors, :request_params, :current_account
 
@@ -27,9 +27,15 @@ module Vt
         request_params[:account_uuid] = current_account["account"]["global_account_id"]
       end
       @status_code, response = video_endpoint(request_params)
-      return response["data"] if status_code == "success"
+      @pagination = {
+        "page": response["data"]["pagination"]["page"],
+        "per_page": response["data"]["pagination"]["per_page"],
+        "count": response["data"]["pagination"]["total"],
+        "more": !response["data"]["pagination"]["is_last_page"],
+      }
+      return response["data"]["values"] if status_code == "success"
 
-      error_message = if response["data"] && response["data"]["errors"]&.first["code"].present?
+      error_message = if response["data"] && response["data"]["errors"]&.first&.[]("code").present?
                         response["data"]["errors"]
                       else
                         response
@@ -62,11 +68,7 @@ module Vt
         errors << "Technical issue, please try again later"
       else
         self.error_code = :technical_issue
-        errors << if error_message.present?
-                    error_message
-                  else
-                    "Technical issue, please try again later"
-                  end
+        errors << (error_message.presence || "Technical issue, please try again later")
       end
     end
   end
