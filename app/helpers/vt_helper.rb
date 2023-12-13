@@ -23,7 +23,7 @@ module VtHelper
       ["success", response.as_json]
     rescue ApolloVtClient::ApiError => e
       error_message = if json_parsable?(e.response_body)
-                        JSON.parse(e.response_body)["message"]
+                        JSON.parse(e.response_body)
                       else
                         e.response_body.slice(0, 100)
                       end
@@ -50,7 +50,12 @@ module VtHelper
       opts[:extra_data] = params["extraData"] if params["extraData"].present?
       ["success", api_instance.v2_vod_create(opts, {}).as_json]
     rescue ApolloVtClient::ApiError => e
-      [e.code.to_i, JSON.parse(e.response_body)]
+      error_message = if json_parsable?(e.response_body)
+                        JSON.parse(e.response_body)
+                      else
+                        e.response_body.slice(0, 100)
+                      end
+      [e.code.to_i, error_message]
     rescue StandardError => e
       ["failed", e.message]
     end

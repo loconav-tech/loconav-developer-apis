@@ -34,20 +34,23 @@ module Vt
         request_params[:account_uuid] = current_account["account"]["global_account_id"]
       end
       @status_code, response = video_endpoint(request_params)
-      @pagination = {
-        "page": response["data"]["pagination"]["page"],
-        "per_page": response["data"]["pagination"]["per_page"],
-        "count": response["data"]["pagination"]["total"],
-        "more": !response["data"]["pagination"]["is_last_page"],
-      }
-      return response["data"]["values"] if status_code == "success"
-
-      error_message = if response["data"] && response["data"]["errors"]&.first&.[]("code").present?
-                        response["data"]["errors"]
-                      else
-                        response
-                      end
-      handle_errors(status_code, error_message)
+      if status_code == "success"
+        @pagination = {
+          "page": response["data"]["pagination"]["page"],
+          "per_page": response["data"]["pagination"]["per_page"],
+          "count": response["data"]["pagination"]["total"],
+          "more": !response["data"]["pagination"]["is_last_page"],
+        }
+        return response["data"]["values"]
+      else
+        error_message = if response["data"] && response["data"]["errors"]&.first&.[]("code").present?
+                          response["data"]["errors"].each do |error|
+                            handle_errors(status_code, error)
+                          end
+                        else
+                          response
+                        end
+      end
     end
 
     def create!
@@ -67,8 +70,12 @@ module Vt
     def handle_errors(error_code, error_message)
       case error_code
       when 400, "failed"
+        errors << if error_message["message"].present? && error_message["field"].present?
+                    error_message["field"] + error_message["message"]
+                  else
+                    "Invalid request Error: #{error_message}"
+                  end
         self.error_code = :invalid_request
-        errors << "Invalid request Error: #{error_message}"
       when /not supported/
         self.error_code = :not_supported
         errors << "Currently not supported Error: #{error_message}"
