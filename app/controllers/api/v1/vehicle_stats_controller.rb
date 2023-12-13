@@ -1,7 +1,7 @@
 module Api
   module V1
     class VehicleStatsController < ApplicationController
-      include AuthenticationHelper
+      include AuthenticationHelper, UtilHelper
 
       before_action :authenticate_account
 
@@ -36,6 +36,28 @@ module Api
           page: params[:page] || 1,
           per_page: params[:per_page] || 10,
         }
+      end
+
+      def history
+        request_params = params.permit(Vehicle::Telematics::HistoryStatsService::QUERY_PARAMS)
+        service = Vehicle::Telematics::HistoryStatsService.new(
+          current_account["authentication_token"],
+          request_params[:vehicleId],
+          request_params[:start_time],
+          request_params[:end_time],
+          request_params[:sensors],
+        )
+        history_stats = service.run!
+        status_code = to_status(service)
+        response = if service.errors.any?
+                     Loconav::Response::Builder.failure(errors: [{
+                                                                   message: service.errors.join(", "),
+                                                                   code: status_code,
+                                                                 }])
+                   else
+                     Loconav::Response::Builder.success(values: history_stats)
+                   end
+        render json: response, status: status_code
       end
 
       private def to_status(service)

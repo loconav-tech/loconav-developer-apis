@@ -10,6 +10,7 @@ module Linehaul
     FETCH_VEHICLE_LITE_URL = LINEHAUL_BASE_URL + "/api/v5/partner/vehicles/lite"
     FETCH_VEHICLE_MOTION_URL = LINEHAUL_BASE_URL + "/api/v5/partner/vehicles?fetch_motion_status=true"
     FETCH_VEHICLE_SENSOR_URL = LINEHAUL_BASE_URL + "/api/v5/trucks/sensors/current_values"
+    FETCH_HISTORY_STATS_URL = LINEHAUL_BASE_URL + "/api/v5/vehicle_data"
     ERROR_MSG_VEHICLE_LITE = "Error fetching data for vehicles".freeze
 
     attr_accessor :auth_token
@@ -51,6 +52,36 @@ module Linehaul
         "vehicle_ids": vehicles,
         "sensors": sensors,
       }.compact
+    end
+
+    def fetch_history_stats(vehicle, sensors, start_time, end_time)
+      response = Typhoeus::Request.new(
+        FETCH_HISTORY_STATS_URL,
+        headers: {
+          Authorization: auth_token,
+          'Content-Type' => 'application/json',
+        },
+        body: build_vehicle_data_request(vehicle, sensors, start_time, end_time).to_json,
+        timeout: TIMEOUT,
+        connecttimeout: CONNECTION_TIMEOUT,
+        method: :post,
+        ).run
+      parse_response(response)
+    end
+
+    private def build_vehicle_data_request(vehicle, sensors, start_time, end_time)
+      {
+        time_range: {
+          start_time: start_time,
+          end_time: end_time,
+        },
+        sensors: [
+          {
+            vehicle_uuid: vehicle,
+            sensor_names: sensors
+          },
+        ]
+      }
     end
 
     private def parse_response(response)
