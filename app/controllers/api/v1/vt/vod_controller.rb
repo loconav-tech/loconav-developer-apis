@@ -13,7 +13,7 @@ module Api
           status_code = to_status(service)
           response = if service.errors.present?
                        Loconav::Response::Builder.failure(errors: [{
-                                                                     message: service.errors.join(", "),
+                                                                     message: service.errors,
                                                                      code: status_code,
                                                                    }])
                      else
