@@ -40,7 +40,7 @@ module Api
 
         private def to_status(service)
           if service.status_code
-            if service.error_code.in?(%i[ invalid_request ])
+            if service.error_code.in?(%i[ invalid_request not_found ])
               :bad_request
             elsif service.error_code.in?(%i[technical_issue data_not_found])
               :unprocessable_entity
