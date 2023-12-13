@@ -26,20 +26,21 @@ module Api
           request_params = params.permit(::Vt::VodService::CREATE_QUERY_PARAMS)
           service = ::Vt::VodService.new(request_params, @current_account)
           response = service.create!
+          status_code = to_status(service)
           response = if service.errors.present?
                        Loconav::Response::Builder.failure(errors: [{
                                                                      message: service.errors.join(", "),
-                                                                     code: service.status_code,
+                                                                     code: status_code,
                                                                    }])
                      else
                        Loconav::Response::Builder.success(values: response)
                      end
-          render json: response, status: service.status_code
+          render json: response, status: status_code
         end
 
         private def to_status(service)
           if service.status_code
-            if service.error_code.in?(%i[])
+            if service.error_code.in?(%i[ invalid_request not_found ])
               :bad_request
             elsif service.error_code.in?(%i[technical_issue data_not_found])
               :unprocessable_entity
