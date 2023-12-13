@@ -10,7 +10,7 @@ gem "rails", "~> 7.0.8"
 gem "representable"
 gem "rswag"
 gem "typhoeus", "~> 1.2"
-
+gem "byebug"
 group :development, :test do
   gem "debug", platforms: %i[mri mingw x64_mingw]
   gem "dotenv-rails"

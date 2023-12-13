@@ -17,6 +17,7 @@ module Vehicle
 
       def run!
         validate!
+        validate_sensors if errors.empty?
         fetch_history_stats if errors.empty?
       end
 
@@ -37,6 +38,12 @@ module Vehicle
         else
           handle_errors("Technical issue")
         end
+      end
+
+      private def validate_sensors
+        success, response = Sensor::HistorySensorService.new(sensors).validate!
+
+        handle_errors(response) unless success
       end
 
       private def handle_errors(error_response)
