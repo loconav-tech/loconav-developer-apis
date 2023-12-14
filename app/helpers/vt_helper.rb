@@ -6,16 +6,10 @@ module VtHelper
       api_instance = ApolloVtClient::V2Api.new
       opts = {}
       opts[:account_uuid] = params[:account_uuid]
-      epoch = params[:isEpoch]
-      opts[:epoch] = epoch
+      opts[:epoch] = true
       opts[:device_id] = params[:deviceId]
-      if opts[:epoch]
-        opts[:start_time_epoch] = params["startTime"]
-        opts[:end_time_epoch] = params["endTime"]
-      else
-        opts[:start_time] = params["startTime"]
-        opts[:end_time] = params["endTime"]
-      end
+      opts[:start_time_epoch] = params["startTime"]
+      opts[:end_time_epoch] = params["endTime"]
       opts[:creator_type] = params["creatorType"]
       opts[:page_number] = params["page"] if params["page"].present?
       opts[:page_size] = params["perPage"] if params["perPage"].present?
