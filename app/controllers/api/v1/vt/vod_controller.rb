@@ -39,13 +39,11 @@ module Api
         end
 
         private def to_status(service)
-          if service.status_code
-            if service.error_code.in?(%i[ invalid_request not_found ])
-              :bad_request
-            elsif service.error_code.in?(%i[technical_issue data_not_found])
-              :unprocessable_entity
-            end
-          else
+          if service.status_code.in?(%i[ invalid_request not_found ])
+            :bad_request
+          elsif service.status_code.in?(%i[technical_issue data_not_found unprocessable_entity])
+            :unprocessable_entity
+          elsif service.status_code == "success"
             :ok
           end
         end
@@ -53,4 +51,3 @@ module Api
     end
   end
 end
-

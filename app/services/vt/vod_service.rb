@@ -4,16 +4,16 @@ module Vt
 
     CREATE_QUERY_PARAMS = %i[createdAt creatorId creatorType
                             deviceId driver duration
-                            endTime endTimeEpoch epoch extraData
+                            endTime endTimeEpoch epoch extraData:{}
                             format media requestType resolution
                             startDtm startTime startTimeEpoch status
-                            updatedAt vehicleUuid vodId].freeze
+                            updatedAt vehicleUuid vodId] + [extraData: {}, media: {}]
 
     FETCH_QUERY_PARAMS = %i[deviceId format status creatorType requestType
                             vehicleUuid startTime endTime
                             page perPage].freeze
 
-    attr_accessor :auth_token, :pagination, :status_code, :error_code, :errors, :request_params, :current_account, :required_params
+    attr_accessor :auth_token, :pagination, :status_code, :errors, :request_params, :current_account, :required_params
 
     def initialize(request_params, current_account)
       self.request_params = request_params
@@ -29,6 +29,8 @@ module Vt
     def fetch!
       self.required_params = %i[]
       validate!
+      handle_errors("400", "Invalid page request") unless request_params["page"].to_i > 0
+      handle_errors("400", "Invalid page request") unless request_params["perPage"].to_i > 0
       return if errors.present?
       if current_account.present? && current_account["account"].present? && current_account["account"]["global_account_id"].present?
         request_params[:account_uuid] = current_account["account"]["global_account_id"]
@@ -43,25 +45,30 @@ module Vt
         }
         return response["data"]["values"]
       else
-        error_message = if response["data"] && response["data"]["errors"]&.first&.[]("code").present?
-                          response["data"]["errors"].each do |error|
-                            handle_errors(status_code, error)
-                          end
-                        else
-                          response
-                        end
+        if response["data"] && response["data"]["errors"]&.first&.[]("code").present?
+          response["data"]["errors"].each do |error|
+            handle_errors(status_code, error)
+          end
+        else
+          response
+        end
       end
     end
 
     def create!
-      self.required_params = %i[format resolution requestType creatorType deviceId duration startTime].freeze
+      self.required_params = %i[format resolution requestType creatorType deviceId duration startTime ].freeze
       validate!
       return if errors.present?
-      @status_code, response = video_endpoint_v2_post(request_params)
-      return response if status_code == "success"
 
-      response["data"]["errors"].each do |error|
-        handle_errors(status_code, error)
+      @status_code, response = video_endpoint_v2_post(request_params)
+      return response["data"] if status_code == "success"
+
+      if response["data"].present? && response["data"]["errors"].present?
+        response["data"]["errors"].each do |error|
+          handle_errors(status_code, error)
+        end
+      else
+        handle_errors(status_code, response)
       end
     end
 
@@ -71,23 +78,23 @@ module Vt
       case error_code
       when 400, "failed"
         errors << if error_message["message"].present? && error_message["field"].present?
-                    error_message["field"] + error_message["message"]
+                    error_message["field"] + " " + error_message["message"]
                   else
                     "Invalid request Error: #{error_message}"
                   end
-        self.error_code = :invalid_request
+        self.status_code = :invalid_request
       when /not supported/
-        self.error_code = :not_supported
+        self.status_code = :not_supported
         errors << "Currently not supported Error: #{error_message}"
       when /Data not found/
-        self.error_code = :not_found
+        self.status_code = :not_found
         errors << "Data not found Error: #{error_message}"
       when 308
-        self.error_code = :technical_issue
+        self.status_code = :technical_issue
         errors << "Technical issue, please try again later"
       else
-        self.error_code = :technical_issue
-        errors << (error_message.presence || "Technical issue, please try again later")
+        self.status_code = :unprocessable_entity
+        errors << (error_message.presence || "Unable to process request")
       end
     end
 
@@ -98,6 +105,7 @@ module Vt
       end
 
       unless missing_params.empty?
+        self.status_code = "Data not found"
         handle_errors("Data not found", "Missing parameter(s): #{missing_params.join(', ')}")
       end
     end
