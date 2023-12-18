@@ -12,12 +12,15 @@ Rails.application.routes.draw do
         end
       end
 
-      # VT APIs
-      namespace :vt do
-        resources :livestream, only: %i[index create update destroy], controller: "livestream"
-        resources :vod, only: %i[index create], controller: "vod"
-        resources :lookups, only: [:index], controller: "data"
-      end
+      namespace :vehicle do
+        resources :video, only: %i[index create], controller: "vod"
+        namespace :telematics do
+          resources :livestream, only: %i[index create update destroy], controller: "livestream"
+        end
+        namespace :video do
+          resources :lookups, only: [:index], controller: "data"
+        end
+
     end
   end
 
