@@ -1,8 +1,6 @@
 Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
-      post "vehicle/telematics/last_known", to: "vehicle_stats#last_known"
-      post "vehicle/telematics/history", to: "vehicle_stats#history"
       resources :drivers, only: [:index]
 
       resources :throttler, only: [:index, :create] do
@@ -16,6 +14,8 @@ Rails.application.routes.draw do
         resources :video, only: %i[index create], controller: "vod"
         namespace :telematics do
           resources :livestream, only: %i[index create update destroy], controller: "livestream"
+          post :history, controller: "vehicle_stats"
+          post :last_known, controller: "vehicle_stats"
         end
         namespace :video do
           resources :lookups, only: [:index], controller: "data"
