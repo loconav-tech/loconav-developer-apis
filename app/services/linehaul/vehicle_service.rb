@@ -86,7 +86,7 @@ module Linehaul
     private def parse_response(response)
       if response && response.body.present?
         if response.success?
-          response_data = JSON.parse(response.body).deep_transform_keys! { |key| key.camelize(:lower) }
+          response_data = JSON.parse(response.body)
           [true, response_data]
         elsif response.response_code == 500
           [false, "Technical issue"]

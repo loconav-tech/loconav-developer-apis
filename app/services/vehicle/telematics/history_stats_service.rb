@@ -33,7 +33,7 @@ module Vehicle
 
         if response["data"].present? && response["data"][0]["sensors"].present?
           {
-            history_stats: response["data"][0]["sensors"]
+            history_stats: response.deep_transform_keys! { |key| key.camelize(:lower) }["data"][0]["sensors"]
           }
         else
           handle_errors("Technical issue")
