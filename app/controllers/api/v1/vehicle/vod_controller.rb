@@ -1,6 +1,6 @@
 module Api
   module V1
-    module Vt
+    module Vehicle
       class VodController < ApplicationController
         include AuthenticationHelper
 
@@ -51,3 +51,5 @@ module Api
     end
   end
 end
+
+
