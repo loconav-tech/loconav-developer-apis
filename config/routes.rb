@@ -8,7 +8,7 @@ Rails.application.routes.draw do
       resources :throttler, only: [:index, :create] do
         collection do
           get ":auth_token", action: :get_by_auth_token
-          put "",action: :update
+          put "", action: :update
         end
       end
 
@@ -20,15 +20,15 @@ Rails.application.routes.draw do
         namespace :video do
           resources :lookups, only: [:index], controller: "data"
         end
-
+      end
     end
+
+    # ERROR HANDLING
+    match "/404", to: "errors#not_found", via: :all
+    match "/500", to: "errors#internal_server_error", via: :all
+
+    # SWAGGER
+    mount Rswag::Ui::Engine => "/documentation", as: "rswag_ui"
+    mount Rswag::Api::Engine => "/documentation/api-docs", as: "rswag_api"
   end
-
-  # ERROR HANDLING
-  match "/404", to: "errors#not_found", via: :all
-  match "/500", to: "errors#internal_server_error", via: :all
-
-  # SWAGGER
-  mount Rswag::Ui::Engine => "/documentation", as: "rswag_ui"
-  mount Rswag::Api::Engine => "/documentation/api-docs", as: "rswag_api"
 end
