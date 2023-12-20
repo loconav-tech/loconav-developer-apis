@@ -20,8 +20,8 @@ module Trips
       if success
         @status_code = "success"
         @pagination = { page: params["page"].to_i,
-                        perPage: params["perPage"].presence&.to_i || response["data"].size,
-                        count: response["data"].size }
+                        perPage: params["perPage"].presence&.to_i || 10,
+                        dataCount: response["data"].size }
         return response["data"]
       end
       handle_errors(status_code, response)
