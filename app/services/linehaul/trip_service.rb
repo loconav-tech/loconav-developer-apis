@@ -19,9 +19,10 @@ module Linehaul
     end
 
     def fetch_trips(params)
+      params = params.merge(get_pagination(params))
       response = Typhoeus::Request.new(
         LINEHAUL_BASE_URL + TRIP_URL,
-        params: params,
+        params: params.to_param,
         headers: {
           "Authorization": auth_token,
         },
@@ -41,11 +42,28 @@ module Linehaul
           [false, "Technical issue"]
         else
           response_data = JSON.parse(response.body)
-          [false, response_data["error"]]
+          [false, response_data["message"]]
         end
       else
         [false, "Technical issue"]
       end
+    end
+
+    private def get_pagination(params)
+      response = {}
+      if params["page"].present? && params["perPage"].present?
+        start_index = params["page"].to_i * params["perPage"].to_i
+        end_index = (params["page"].to_i + 1) * params["perPage"].to_i
+        response = { start_index: start_index, end_index: end_index }
+      elsif params["page"].present?
+        start_index = params["page"].to_i * 10
+        response = { start_index: start_index }
+      elsif params["perPage"].present?
+        end_index = params["perPage"].to_i
+        response = { end_index: end_index }
+      end
+
+      response
     end
   end
 end

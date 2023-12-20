@@ -18,7 +18,7 @@ module Api
                                                                      code: status_code,
                                                                    }])
                      else
-                       Loconav::Response::Builder.success(values: response)
+                       Loconav::Response::Builder.success(values: response, pagination: service.pagination)
                      end
           render json: response, status: status_code
         end
