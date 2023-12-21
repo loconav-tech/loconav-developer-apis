@@ -22,7 +22,7 @@ module Linehaul
 
     def fetch_vehicle_details(vehicle_number,pagination)
       response = Typhoeus::Request.new(
-        FETCH_VEHICLE_URL + "?&number=" + vehicle_number.to_s + "&page=" + pagination[:page].to_s + "&per_page=" + pagination[:per_page].to_s,
+        FETCH_VEHICLE_URL + "?&number=" + vehicle_number.to_s + "&page=" + pagination[:page].to_s + "&per_page=" + pagination[:per_page].to_s + "&fetch_with_metrics=false",
         headers: {
           "Authorization": auth_token,
         },
