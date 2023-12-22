@@ -31,4 +31,5 @@ Rails.application.routes.draw do
   # SWAGGER
   mount Rswag::Ui::Engine => "/documentation", as: "rswag_ui"
   mount Rswag::Api::Engine => "/documentation/api-docs", as: "rswag_api"
+
 end
