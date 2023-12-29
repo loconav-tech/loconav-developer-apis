@@ -19,7 +19,22 @@ module Api
                    else
                      Loconav::Response::Builder.success(values: polygons["data"], pagination: polygons["pagination"])
                    end
-        byebug
+        render json: response, status: status_code
+      end
+
+      def create
+        request_params = params.require("polygon").permit(Polygon::CreationService::QUERY_PARAMS)
+        service = Polygon::CreationService.new(current_account,request_params)
+        polygon = service.run!
+        status_code = to_status(service)
+        response = if service.errors.any?
+                     Loconav::Response::Builder.failure(errors: [{
+                                                                   message: service.errors.join(", "),
+                                                                   code: status_code,
+                                                                 }])
+                   else
+                     Loconav::Response::Builder.success(values: polygon)
+                   end
         render json: response, status: status_code
       end
 
@@ -32,11 +47,13 @@ module Api
 
       private def to_status(service)
         if service.error_code
-          if service.error_code.in?(%i[invalid_pagination_request active_should_be_boolean_type])
+          if service.error_code.in?(%i[invalid_pagination_request active_should_be_boolean_type parameter_is_missing])
             :bad_request
           elsif service.error_code.in?(%i[technical_issue])
             :unprocessable_entity
           end
+        elsif service.errors.any?
+          :unprocessable_entity
         else
           :ok
         end

@@ -18,7 +18,7 @@ module Polygon
     def fetch_details
       success,response = Linehaul::PolygonService.new(current_user["authentication_token"]).fetch_polygon_details(pagination,params[:name],params[:active])
       handle_errors(response) && return unless success
-      byebug
+
       if success && response["data"] && response["total_count"]
         pagination[:total_count] = response["total_count"]
         response["pagination"] = pagination
