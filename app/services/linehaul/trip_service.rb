@@ -57,7 +57,7 @@ module Linehaul
           [false, "Technical issue"]
         else
           response_data = JSON.parse(response.body)
-          [false, response_data["message"]]
+          [response_data["success"], response_data["errors"]]
         end
       else
         [false, "Technical issue"]

@@ -5,33 +5,13 @@ module Trips
     FETCH_TRIP_PARAMS = %i[unique_id start_time end_time states driver_id vehicle_id vehicle_number sort_column page
                            perPage] + [filters: {}]
     CREATE_TRIP_PARAMS = %i[
-      create_new_vehicle_route
-      new_vehicle_route_name
-      should_start_at
-      unique_id
-      expected_distance
-      trip_delay_alerts_enabled
-      source_name
-      destination_name
-    ] + [
-      source: {}] + [
-      destination: %i[
-          geofence_id
-          geofence_name
-          address
-          coordinates
-          eta
-          etd
-          create_gate_pass
-        ]] +
-      [
-        consigner: %i[
-          id
-          name
-        ]] + [
-      check_points: {},
-      expected_polyline_ids: [],
-    ]
+      create_new_vehicle_route new_vehicle_route_name should_start_at unique_id expected_distance
+      trip_delay_alerts_enabled source_name destination_name].freeze +
+      [vehicle: %i[id number]].freeze +
+      [source: %i[ address coordinates eta etd geofence_id geofence_name tasks]].freeze +
+      [destination: %i[ geofence_id geofence_name address coordinates eta  etd create_gate_pass ]].freeze +
+      [cosigner: %i[ name phone_number email ]].freeze +
+      [check_points: %i[ name address coordinates eta etd geofence_id geofence_name tasks]].freeze
 
     def initialize(current_account, params)
       self.current_account = current_account
@@ -59,11 +39,10 @@ module Trips
     def create_trip
       return unless errors.empty?
 
-      success, response = Linehaul::TripService.new(@current_account["authentication_token"]).create_trip(params)
-      if success
+      @status_code, response = Linehaul::TripService.new(@current_account["authentication_token"]).create_trip(params)
+      if status_code
         return response
       end
-
       handle_errors(status_code, response)
     end
 
