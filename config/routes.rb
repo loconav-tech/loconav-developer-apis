@@ -3,7 +3,9 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :drivers, only: [:index]
 
-      resources :throttler, only: [:index, :create] do
+      resources :trips, only: %i[index create], controller: "trips/trips"
+
+      resources :throttler, only: %i[index create] do
         collection do
           get ":auth_token", action: :get_by_auth_token
           put "", action: :update
@@ -18,7 +20,7 @@ Rails.application.routes.draw do
           post :last_known, controller: "vehicle_stats"
         end
         namespace :video do
-          resources :lookups, only: [:index], controller: "data"
+          resources :lookups, only: %i[index create], controller: "data"
         end
       end
     end
