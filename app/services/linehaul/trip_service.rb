@@ -63,20 +63,6 @@ module Linehaul
       parse_response(response)
     end
 
-    def delete_trip(params)
-      response = Typhoeus::Request.new(
-        LINEHAUL_BASE_URL + TRIP_URL,
-        params: params.to_param,
-        headers: {
-          "Authorization": auth_token,
-        },
-        timeout: TIMEOUT,
-        connecttimeout: CONNECTION_TIMEOUT,
-        method: :delete,
-      ).run
-      parse_response(response)
-    end
-
     private def parse_response(response)
       if response && response.body.present?
         if response.success?

@@ -67,16 +67,6 @@ module Trips
       handle_errors(status_code, response)
     end
 
-    def delete_trip
-      return unless errors.empty?
-
-      @status_code, response = Linehaul::TripService.new(@current_account["authentication_token"]).delete_trip(params)
-      if status_code
-        return response
-      end
-      handle_errors(status_code, response)
-    end
-
     private def format_params
       params.slice(
         "unique_id",
