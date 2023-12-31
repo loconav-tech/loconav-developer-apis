@@ -20,6 +20,7 @@ pipeline {
     }
   
   environment {
+    BUNDLE_RUBYGEMS__PKG__GITHUB__COM = "loco-bot:${GITHUB_PAT}"
     ENV=getEnv("${params.BRANCH}")
     SERVICE_NAME="loconav-developer-apis"
     ECR_ADDRESS="loconav.azurecr.io"
@@ -63,11 +64,16 @@ pipeline {
         """
       }
     }
-    stage("Helm Package") {
-      steps {
-        helmBuildPush(ECR_ADDRESS, SERVICE_NAME, IMAGE_VERSION, BRANCH )
-      }
-    }
+            stage("Build and Push Docker Image") {
+                steps {
+                    sh 'make dev_server'
+                    sh 'make push REPO_NAME=$REPO_NAME ECR_URL=$ECR_REPO_URL REGION=$REGION'
+                }
+    // stage("Helm Package") {
+    //  steps {
+    //    helmBuildPush(ECR_ADDRESS, SERVICE_NAME, IMAGE_VERSION, BRANCH )
+    //  }
+    // }
     stage("Deployment") {
       steps {
         script {
