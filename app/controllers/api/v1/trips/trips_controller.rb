@@ -39,6 +39,22 @@ module Api
           render json: response, status: status_code
         end
 
+        def update
+          request_params = params.require(:trip).permit(::Trips::TripService::UPDATE_TRIP_PARAMS)
+          service = ::Trips::TripService.new(@current_account, request_params)
+          response = service.update_trip
+          status_code = to_status(service)
+          response = if service.errors.present?
+                       Loconav::Response::Builder.failure(errors: [{
+                                                                     message: service.errors.join(", "),
+                                                                     code: status_code,
+                                                                   }])
+                     else
+                       Loconav::Response::Builder.success(values: response)
+                     end
+          render json: response, status: status_code
+        end
+
         private def to_status(service)
           if service.status_code.in?(%i[ invalid_request not_found ])
             :bad_request
