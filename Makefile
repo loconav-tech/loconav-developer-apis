@@ -16,7 +16,8 @@ MIGRATE_DB:=run app rails db:migrate
 RUN_SIDEKIQ:=run sidekiq up
 DROP_DB:=run app rails db:drop
 
-ECR_IMAGE_TAG:=$(ECR_URL)/$(REPO_NAME):$(VERSION)
+ECR_ADDRESS:=loconav.azurecr.io
+ECR_IMAGE_TAG:=$(ECR_ADDRESS)/$(REPO_NAME):$(VERSION)
 default: dev_server
 
 setup:
