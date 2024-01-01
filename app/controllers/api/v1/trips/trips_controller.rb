@@ -56,7 +56,7 @@ module Api
         end
 
         def destroy
-          request_params = params.require(:trip).permit(::Trips::TripService::DELETE_TRIP_PARAMS)
+          request_params = params.permit(::Trips::TripService::DELETE_TRIP_PARAMS)
           service = ::Trips::TripService.new(@current_account, request_params)
           response = service.delete_trip
           status_code = to_status(service)

@@ -65,7 +65,7 @@ module Linehaul
 
     def delete_trip(params)
       response = Typhoeus::Request.new(
-        LINEHAUL_BASE_URL + TRIP_URL,
+        LINEHAUL_BASE_URL + TRIP_URL + "/#{params[:id]}",
         params: params.to_param,
         headers: {
           "Authorization": auth_token,
