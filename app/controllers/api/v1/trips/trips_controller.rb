@@ -8,7 +8,7 @@ module Api
         before_action :authenticate_account
 
         def index
-          request_params = params.require(:trip).permit(::Trips::TripService::FETCH_TRIP_PARAMS)
+          request_params = params.permit(::Trips::TripService::FETCH_TRIP_PARAMS)
           service = ::Trips::TripService.new(@current_account, request_params)
           response = service.fetch_trips
           status_code = to_status(service)

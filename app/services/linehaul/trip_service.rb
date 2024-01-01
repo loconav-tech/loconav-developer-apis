@@ -50,7 +50,7 @@ module Linehaul
 
     def update_trip(params)
       response = Typhoeus::Request.new(
-        LINEHAUL_BASE_URL + TRIP_URL,
+        LINEHAUL_BASE_URL + TRIP_URL + "/#{params[:id]}",
         headers: {
           "Authorization": auth_token,
           "Content-Type": "application/json",
