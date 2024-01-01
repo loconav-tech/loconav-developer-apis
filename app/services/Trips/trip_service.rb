@@ -13,6 +13,17 @@ module Trips
       [cosigner: %i[ name phone_number email ]].freeze +
       [check_points: %i[ name address coordinates eta etd geofence_id geofence_name tasks]].freeze
 
+    UPDATE_TRIP_PARAMS = %i[ id action source
+      create_new_vehicle_route new_vehicle_route_name should_start_at unique_id expected_distance
+      trip_delay_alerts_enabled source_name destination_name].freeze +
+      [vehicle: %i[id number]].freeze +
+      [source: %i[ address coordinates eta etd geofence_id geofence_name tasks]].freeze +
+      [destination: %i[ geofence_id geofence_name address coordinates eta etd create_gate_pass ]].freeze +
+      [cosigner: %i[ name phone_number email ]].freeze +
+      [check_points: %i[ name address coordinates eta etd geofence_id geofence_name tasks]].freeze
+
+    DELETE_TRIP_PARAMS = %i[id].freeze
+
     def initialize(current_account, params)
       self.current_account = current_account
       self.pagination = pagination
@@ -40,6 +51,16 @@ module Trips
       return unless errors.empty?
 
       @status_code, response = Linehaul::TripService.new(@current_account["authentication_token"]).create_trip(params)
+      if status_code
+        return response
+      end
+      handle_errors(status_code, response)
+    end
+
+    def update_trip
+      return unless errors.empty?
+
+      @status_code, response = Linehaul::TripService.new(@current_account["authentication_token"]).update_trip(params)
       if status_code
         return response
       end

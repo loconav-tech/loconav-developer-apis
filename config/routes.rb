@@ -3,7 +3,11 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :drivers, only: [:index]
 
-      resources :trips, only: %i[index create], controller: "trips/trips"
+      resources :trips, only: [:index, :create, :destroy], controller: "trips/trips" do
+        collection do
+          put :update
+        end
+      end
 
       resources :throttler, only: %i[index create] do
         collection do

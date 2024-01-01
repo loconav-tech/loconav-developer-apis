@@ -48,6 +48,21 @@ module Linehaul
       parse_response(response)
     end
 
+    def update_trip(params)
+      response = Typhoeus::Request.new(
+        LINEHAUL_BASE_URL + TRIP_URL + "/#{params[:id]}",
+        headers: {
+          "Authorization": auth_token,
+          "Content-Type": "application/json",
+        },
+        body: params.to_json,
+        timeout: TIMEOUT,
+        connecttimeout: CONNECTION_TIMEOUT,
+        method: :put,
+      ).run
+      parse_response(response)
+    end
+
     private def parse_response(response)
       if response && response.body.present?
         if response.success?
