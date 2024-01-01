@@ -33,6 +33,21 @@ module Linehaul
       parse_response(response)
     end
 
+    def create_trip(params)
+      response = Typhoeus::Request.new(
+        LINEHAUL_BASE_URL + TRIP_URL,
+        headers: {
+          "Authorization": auth_token,
+          "Content-Type": "application/json",
+        },
+        body: params.to_json,
+        timeout: TIMEOUT,
+        connecttimeout: CONNECTION_TIMEOUT,
+        method: :post,
+      ).run
+      parse_response(response)
+    end
+
     private def parse_response(response)
       if response && response.body.present?
         if response.success?
@@ -42,7 +57,7 @@ module Linehaul
           [false, "Technical issue"]
         else
           response_data = JSON.parse(response.body)
-          [false, response_data["message"]]
+          [response_data["success"], response_data["errors"]]
         end
       else
         [false, "Technical issue"]
