@@ -44,6 +44,22 @@ module Linehaul
       parse_response(response)
     end
 
+    def update_polygon(params,polygon_id)
+      response = Typhoeus::Request.new(
+        POLYGON_URL + "/" + polygon_id,
+        headers: {
+          "X-Linehaul-V2-Secret": V2_API_ACCESS_TOKEN,
+          Authorization: auth_token,
+          "Content-Type": "application/json"
+        },
+        body: build_request_body(params).to_json,
+        timeout: TIMEOUT,
+        connecttimeout: CONNECTION_TIMEOUT,
+        method: :put,
+        ).run
+      parse_response(response)
+    end
+
     def build_request_body(params)
       {
         "name": params[:name],
@@ -51,7 +67,7 @@ module Linehaul
         "long": params[:long],
         "radius": params[:radius],
         "active": params[:active],
-        "distance_unit": params[:distance_unit]
+        "distance_unit": params[:distance_unit],
       }.compact
     end
 

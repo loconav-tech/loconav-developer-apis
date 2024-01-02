@@ -38,6 +38,23 @@ module Api
         render json: response, status: status_code
       end
 
+      def update
+        request_params = params.require("polygon").permit(Polygon::UpdationService::QUERY_PARAMS)
+        polygon_id = params[:id]
+        service = Polygon::UpdationService.new(current_account,polygon_id,request_params)
+        polygon = service.run!
+        status_code = to_status(service)
+        response = if service.errors.any?
+                     Loconav::Response::Builder.failure(errors: [{
+                                                                   message: service.errors.join(", "),
+                                                                   code: status_code,
+                                                                 }])
+                   else
+                     Loconav::Response::Builder.success(values: polygon)
+                   end
+        render json: response, status: status_code
+      end
+
       private def build_pagination
         {
           page: params[:page] || 1,
