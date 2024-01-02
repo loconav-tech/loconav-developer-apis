@@ -1,0 +1,27 @@
+job:
+  name: loconav-developer-apis-migrations
+  group: loconav-developer-apis
+  env: staging
+  restartPolicy: Never
+  config:
+    server_enabled: true
+    client:
+    secret:
+    pod:
+  container:
+    image:
+    imagePullPolicy: IfNotPresent
+    command:
+      - /bin/sh
+      - -c
+    args:
+      - rake
+      - db:migrate
+    config: [ ]
+resources:
+  requests:
+    cpu: 150m
+    memory: 256Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
