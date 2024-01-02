@@ -6,7 +6,7 @@ RUN make configurator
 
 FROM ruby:3.2.2
 RUN apt-get update -qq \
-  && apt-get install -y libpq-dev \
+  && apt-get install -y libpq-dev
 
 WORKDIR /loconav-developer-apis
 ARG BUNDLE_RUBYGEMS__PKG__GITHUB__COM
