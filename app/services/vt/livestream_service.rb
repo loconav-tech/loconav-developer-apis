@@ -10,6 +10,8 @@ module Vt
     end
 
     def fetch_livestream(params)
+      return unless errors.empty?
+
       response_code, response = livestream_get_endpoint(params)
       (handle_errors(response_code, response) && return) unless response_code == "success"
       response
