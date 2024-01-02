@@ -1,0 +1,38 @@
+
+app:
+  name: loconav-developer-apis
+  group: loconav-developer-apis
+  replicaCount: 1
+  env: staging
+  imagePullSecrets:
+    name: regcred
+  container:
+    image: 465252866563.dkr.ecr.ap-south-1.amazonaws.com/loconav-developer-apis:latest
+    imagePullPolicy: IfNotPresent
+    port: 3000
+    
+  service:
+    type: ClusterIP
+    port: 3000
+
+  ingress:
+    enabled: true
+    name: loconav-developer-apis-ingress
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 500Mi
+
+nodeAntiAffinity:
+  enabled: false
+  topologyKey: "kubernetes.io/hostname"
+
+nodeSelector: {}
+
+tolerations: {}
+
+annotations: {}

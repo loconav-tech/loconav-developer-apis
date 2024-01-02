@@ -9,7 +9,7 @@ RSpec.describe Drivers::QueryService, type: :service do
     context "when the driver response is successful" do
       it "returns a list of drivers" do
         allow(Linehaul::DriverService).to receive(:new).and_return(
-          double(fetch_drivers: { "success" => true, "drivers" => [{ "name" => "name-exists" }] })
+          double(fetch_drivers: { "success" => true, "drivers" => [{ "name" => "name-exists" }] }),
         )
         service = Drivers::QueryService.new(account, valid_params)
         result = service.run!
@@ -21,7 +21,7 @@ RSpec.describe Drivers::QueryService, type: :service do
     context "when the driver response is not successful" do
       it "sets an error and error_code" do
         allow(Linehaul::DriverService).to receive(:new).and_return(
-          double(fetch_drivers: { "success" => false, "error_message" => "Driver not found" })
+          double(fetch_drivers: { "success" => false, "error_message" => "Driver not found" }),
         )
         service = Drivers::QueryService.new(account, invalid_params)
         result = service.run!

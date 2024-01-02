@@ -8,7 +8,7 @@ module Linehaul
     TIMEOUT = 20
     LINEHAUL_BASE_URL = Rails.application.secrets.linehaul_base_url
     FETCH_DRIVER_URL = LINEHAUL_BASE_URL + "/api/v5/drivers"
-    DEFAULT_ERROR_MSG = "Error fetching data for driver".freeze
+    ERROR_MSG_DRIVER = "Error fetching data for driver".freeze
 
     attr_accessor :auth_token
 
@@ -27,7 +27,7 @@ module Linehaul
         connecttimeout: CONNECTION_TIMEOUT,
         method: :get,
       ).run
-      respond(response, ActionFailed, DEFAULT_ERROR_MSG)
+      respond(response, ActionFailed, ERROR_MSG_DRIVER)
     end
   end
 end
