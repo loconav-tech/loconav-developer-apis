@@ -1,7 +1,7 @@
 require "erb"
 require "json"
 
-path = "/home/app/loconav-developer-apis/config/template"
+path = "loconav-developer-apis/config/template"
 
 files = %w(.env log_core.yml)
 
