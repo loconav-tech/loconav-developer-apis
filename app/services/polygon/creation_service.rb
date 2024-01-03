@@ -4,8 +4,9 @@ module Polygon
     QUERY_PARAMS = %i[name lat radius long distance_unit active]
     REQUIRED_PARAMS = %w[name lat long radius]
 
-    attr_accessor :params,:current_account,:errors,:error_code
-    def initialize(current_account,request_params)
+    attr_accessor :params, :current_account, :errors, :error_code
+
+    def initialize(current_account, request_params)
       self.current_account = current_account
       self.params = request_params
       self.errors = []
@@ -18,7 +19,6 @@ module Polygon
 
     def validate_params
       check_missing_params
-      # validate_data_types if errors.empty?
     end
 
     def check_missing_params
@@ -27,16 +27,12 @@ module Polygon
       end
     end
 
-    # def validate_data_types
-    #   handle_errors()
-    # end
-
     def create_polygon
-      success,response = Linehaul::PolygonService.new(current_account["authentication_token"]).create_polygon(params)
+      success, response = Linehaul::PolygonService.new(current_account["authentication_token"]).create_polygon(params)
 
       unless success
         if response == "Technical issue"
-          handle_errors("Technical issue, please try again later")
+          handle_errors("Technical issue")
         else
           errors << response
         end
@@ -46,7 +42,7 @@ module Polygon
       if success && response.present? && response["polygon"].present?
         response["polygon"]
       else
-        handle_errors("Technical issue, please try again later")
+        handle_errors("Technical issue")
       end
 
     end

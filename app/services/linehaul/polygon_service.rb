@@ -15,9 +15,11 @@ module Linehaul
       self.auth_token = auth_token
     end
 
-    def fetch_polygon_details(pagination,name,active)
+    def fetch_polygon_details(pagination, name, active)
+      start_index = pagination[:page] * pagination[:per_page]
+      end_index = (pagination[:page] + 1) * pagination[:per_page]
       response = Typhoeus::Request.new(
-        FETCH_POLYGONS_URL + "?page=" + pagination[:page].to_s + "&per_page=" + pagination[:per_page].to_s + "&filter=" + name.to_s + "&active=" + active.to_s,
+        FETCH_POLYGONS_URL + "?start_index=" + start_index.to_s + "&end_index=" + end_index.to_s + "&filter=" + name.to_s + "&active=" + active.to_s,
         headers: {
           "Authorization": auth_token,
           "X-Linehaul-V2-Secret": V2_API_ACCESS_TOKEN
@@ -25,7 +27,7 @@ module Linehaul
         timeout: TIMEOUT,
         connecttimeout: CONNECTION_TIMEOUT,
         method: :get,
-        ).run
+      ).run
       parse_response(response)
     end
 
@@ -44,7 +46,7 @@ module Linehaul
       parse_response(response)
     end
 
-    def update_polygon(params,polygon_id)
+    def update_polygon(params, polygon_id)
       response = Typhoeus::Request.new(
         POLYGON_URL + "/" + polygon_id,
         headers: {
@@ -56,7 +58,7 @@ module Linehaul
         timeout: TIMEOUT,
         connecttimeout: CONNECTION_TIMEOUT,
         method: :put,
-        ).run
+      ).run
       parse_response(response)
     end
 

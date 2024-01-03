@@ -7,7 +7,7 @@ module Api
 
       def index
         pagination = build_pagination
-        service = Polygon::QueryService.new(current_account,pagination,params)
+        service = Polygon::QueryService.new(current_account, pagination, params)
         polygons = service.run!
         status_code = to_status(service)
 
@@ -24,7 +24,7 @@ module Api
 
       def create
         request_params = params.require("polygon").permit(Polygon::CreationService::QUERY_PARAMS)
-        service = Polygon::CreationService.new(current_account,request_params)
+        service = Polygon::CreationService.new(current_account, request_params)
         polygon = service.run!
         status_code = to_status(service)
         response = if service.errors.any?
@@ -41,7 +41,7 @@ module Api
       def update
         request_params = params.require("polygon").permit(Polygon::UpdationService::QUERY_PARAMS)
         polygon_id = params[:id]
-        service = Polygon::UpdationService.new(current_account,polygon_id,request_params)
+        service = Polygon::UpdationService.new(current_account, polygon_id, request_params)
         polygon = service.run!
         status_code = to_status(service)
         response = if service.errors.any?
@@ -57,8 +57,8 @@ module Api
 
       private def build_pagination
         {
-          page: params[:page] || 1,
-          per_page: params[:per_page] || 10,
+          page: params[:page].present? ? params[:page].to_i : 1,
+          per_page: params[:per_page].present? ? params[:per_page].to_i : 10,
         }
       end
 

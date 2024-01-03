@@ -3,9 +3,9 @@ module Polygon
 
     QUERY_PARAMS = %i[name lat radius long distance_unit active]
 
-    attr_accessor :polygon_id,:params,:errors,:error_code,:current_account
+    attr_accessor :polygon_id, :params, :errors, :error_code, :current_account
 
-    def initialize(current_account,polygon_id,request_params)
+    def initialize(current_account, polygon_id, request_params)
       self.current_account = current_account
       self.polygon_id = polygon_id
       self.params = request_params
@@ -17,7 +17,7 @@ module Polygon
     end
 
     def update_polygon
-      success, response = Linehaul::PolygonService.new(current_account["authentication_token"]).update_polygon(params,polygon_id)
+      success, response = Linehaul::PolygonService.new(current_account["authentication_token"]).update_polygon(params, polygon_id)
 
       unless success
         if response == "Technical issue"
