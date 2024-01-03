@@ -20,8 +20,8 @@ module Polygon
       success, response = Linehaul::PolygonService.new(current_account["authentication_token"]).update_polygon(params, polygon_id)
 
       unless success
-        if response == "Technical issue"
-          handle_errors("Technical issue, please try again later")
+        if response.present? && (response == "Technical issue" || response.include?("is invalid"))
+          handle_errors(response)
         else
           errors << response
         end
@@ -38,9 +38,9 @@ module Polygon
 
     private def handle_errors(error_response)
       case error_response
-      when /is missing/
+      when /is invalid/
         errors << error_response
-        self.error_code = :parameter_is_missing
+        self.error_code = :parameter_is_invalid
       else
         errors << "Technical issue, please try again later"
         self.error_code = :technical_issue

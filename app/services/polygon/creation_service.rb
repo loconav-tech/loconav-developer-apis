@@ -31,8 +31,8 @@ module Polygon
       success, response = Linehaul::PolygonService.new(current_account["authentication_token"]).create_polygon(params)
 
       unless success
-        if response == "Technical issue"
-          handle_errors("Technical issue")
+        if response.present? && (response == "Technical issue" || response.include?("is invalid"))
+          handle_errors(response)
         else
           errors << response
         end
@@ -52,6 +52,9 @@ module Polygon
       when /is missing/
         errors << error_response
         self.error_code = :parameter_is_missing
+      when /is invalid/
+        errors << error_response
+        self.error_code = :parameter_is_invalid
       else
         errors << "Technical issue, please try again later"
         self.error_code = :technical_issue

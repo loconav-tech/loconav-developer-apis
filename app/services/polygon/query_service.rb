@@ -19,8 +19,8 @@ module Polygon
       success, response = Linehaul::PolygonService.new(current_user["authentication_token"]).fetch_polygon_details(pagination, params[:name], params[:active])
 
       unless success
-        if response == "Technical issue"
-          handle_errors("Technical issue")
+        if response.present? && (response == "Technical issue" || response.include?("is invalid"))
+          handle_errors(response)
         else
           errors << response
         end
@@ -49,6 +49,9 @@ module Polygon
       when "Invalid per_page request"
         errors << error_response
         self.error_code = :invalid_pagination_request
+      when /is invalid/
+        errors << error_response
+        self.error_code = :parameter_is_invalid
       else
         errors << "Technical issue, please try again later"
         self.error_code = :technical_issue

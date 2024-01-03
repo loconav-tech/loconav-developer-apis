@@ -64,7 +64,7 @@ module Api
 
       private def to_status(service)
         if service.error_code
-          if service.error_code.in?(%i[invalid_pagination_request active_should_be_boolean_type parameter_is_missing])
+          if service.error_code.in?(%i[invalid_pagination_request active_should_be_boolean_type parameter_is_missing parameter_is_invalid])
             :bad_request
           elsif service.error_code.in?(%i[technical_issue])
             :unprocessable_entity
