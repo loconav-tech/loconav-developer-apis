@@ -1,43 +1,13 @@
-global: &global
-  adapter: <%= ENV['DB_ADAPTER'] ||= 'postgresql' %>
-  pool: 5
-  timeout: 30
+default:
+  adapter: postgresql
   encoding: unicode
-  port: 5432
-  database: <%= ENV["LOCONAV_DEVELOPER_APIS_PG_NAME"] %>
-  host: <%= ENV["LOCONAV_DEVELOPER_APIS_PG_HOST"] ||= '' %>
-  username: <%= ENV["LOCONAV_DEVELOPER_APIS_PG_USERNAME"] %>
-  password: <%= ENV["LOCONAV_DEVELOPER_APIS_PG_PASSWORD"] %>
   prepared_statements: false
+  pool: 5
+  database: loconav_developer_apis
+  username: loconav
+  password: loconav
+  host: lcnv-dev-apis-db-lc
+  port: 5432
   variables:
     statement_timeout: 10000
 
-production:
-  <<: *global
-
-preprod:
-  <<: *global
-
-staging:
-  <<: *global
-
-development:
-  <<: *global
-
-staging01:
-  <<: *global
-
-staging02:
-  <<: *global
-
-staging03:
-  <<: *global
-
-staging04:
-  <<: *global
-
-staging05:
-  <<: *global
-
-staging06:
-  <<: *global
