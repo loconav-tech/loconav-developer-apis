@@ -66,11 +66,9 @@ module Api
         if service.error_code
           if service.error_code.in?(%i[invalid_pagination_request active_should_be_boolean_type parameter_is_missing parameter_is_invalid])
             :bad_request
-          elsif service.error_code.in?(%i[technical_issue])
+          elsif service.error_code.in?(%i[technical_issue something_went_wrong])
             :unprocessable_entity
           end
-        elsif service.errors.any?
-          :unprocessable_entity
         else
           :ok
         end

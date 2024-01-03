@@ -37,8 +37,9 @@ module Linehaul
         headers: {
           "X-Linehaul-V2-Secret": V2_API_ACCESS_TOKEN,
           Authorization: auth_token,
+          "Content-Type": "application/json"
         },
-        body: build_request_body(params),
+        body: build_request_body(params).to_json,
         timeout: TIMEOUT,
         connecttimeout: CONNECTION_TIMEOUT,
         method: :post,

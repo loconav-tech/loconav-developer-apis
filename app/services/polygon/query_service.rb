@@ -18,21 +18,14 @@ module Polygon
     def fetch_details
       success, response = Linehaul::PolygonService.new(current_user["authentication_token"]).fetch_polygon_details(pagination, params[:name], params[:active])
 
-      unless success
-        if response.present? && (response == "Technical issue" || response.include?("is invalid"))
-          handle_errors(response)
-        else
-          errors << response
-        end
-        return
-      end
+      handle_errors(response) && return unless success
 
       if success && response["data"] && response["total_count"]
         pagination[:total_count] = response["total_count"]
         response["pagination"] = pagination
         response
       else
-        handle_errors("techincal_issue")
+        handle_errors("Techincal_issue")
       end
     end
 
@@ -52,9 +45,12 @@ module Polygon
       when /is invalid/
         errors << error_response
         self.error_code = :parameter_is_invalid
-      else
+      when "Technical issue"
         errors << "Technical issue, please try again later"
         self.error_code = :technical_issue
+      else
+        errors << error_response
+        self.error_code = :something_went_wrong
       end
     end
 
