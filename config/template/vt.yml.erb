@@ -1,8 +1,0 @@
-<%
-  def app_config(*keys)
-    ENV[keys.join("_").upcase]&.strip
-  end
-%>
-
-<%= ENV["RAILS_ENV"] ? ENV["RAILS_ENV"] : fetch(:rails_env) %>:
-  loconav_video_telematics_url: <%= app_config('loconav','video','telematics','url') %>
