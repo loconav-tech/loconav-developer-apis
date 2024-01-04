@@ -1,0 +1,25 @@
+<%
+  def local_config(*keys)
+    ENV[keys.join("_").upcase]
+  end
+%>
+
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  prepared_statements: false
+
+<%= ENV["RAILS_ENV"] ? ENV["RAILS_ENV"] : fetch(:rails_env) %>:
+  <<: *default
+  adapter: postgresql
+  encoding: unicode
+  prepared_statements: false
+  pool: 5
+  database: <%= ENV["LOCONAV_DEVELOPER_APIS_PG_NAME"] %>
+  username: <%= ENV["LOCONAV_DEVELOPER_APIS_PG_USERNAME"] %>
+  password: <%= ENV["LOCONAV_DEVELOPER_APIS_PG_PASSWORD"] %>
+  host: <%= ENV["LOCONAV_DEVELOPER_APIS_PG_HOST"] ||= '' %>
+  port: 5432
+  variables:
+    statement_timeout: 10000 # 10s
+
