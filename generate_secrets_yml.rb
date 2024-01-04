@@ -1,9 +1,9 @@
 require "erb"
 require "json"
 
-path = "/home/app/loconav-developer-apis/config/template"
+path = "/loconav-developer-apis/config"
 
-files = %w(.env log_core.yml)
+files = %w(secrets.yml database.yml)
 
 files.each do |name|
   File.open("#{path}/#{name}", "w") do |f|
