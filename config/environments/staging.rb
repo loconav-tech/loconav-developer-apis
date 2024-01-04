@@ -50,6 +50,10 @@ Rails.application.configure do
   config.logger = Logger.new(STDOUT)
   config.lograge.formatter = Lograge::Formatters::Logstash.new
 
+  if ENV["RAILS_LOG_TO_STDOUT"].present?
+    config.log_formatter = :json
+    config.logger = ActiveSupport::Logger.new(STDOUT)
+  end
 
   # Tell Active Support which deprecation messages to disallow.
   config.active_support.disallowed_deprecation_warnings = []

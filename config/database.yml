@@ -14,3 +14,11 @@ default: &default
 development:
   <<: *default
 
+staging:
+  <<: *default
+
+production:
+  <<: *default
+
+pre-prod:
+  <<: *default
