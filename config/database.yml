@@ -1,13 +1,16 @@
-default:
+default: &default
   adapter: postgresql
   encoding: unicode
   prepared_statements: false
   pool: 5
   database: loconav_developer_apis
-  username: loconav
-  password: loconav
-  host: lcnv-dev-apis-db-lc
+  username:
+  password:
+  host: localhost
   port: 5432
   variables:
     statement_timeout: 10000
+
+development:
+  <<: *default
 
