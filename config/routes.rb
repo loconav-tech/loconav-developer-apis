@@ -5,6 +5,13 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :drivers, only: [:index]
+
+      resources :trips, only: %i[index create], controller: "trips/trips" do
+        collection do
+          put :update
+          delete :destroy
+        end
+      end
       resources :polygons, only: [:index,:create,:update]
       resources :throttler, only: [:index, :create] do
         collection do
@@ -21,7 +28,7 @@ Rails.application.routes.draw do
           post :last_known, controller: "vehicle_stats"
         end
         namespace :video do
-          resources :lookups, only: [:index], controller: "data"
+          resources :lookups, only: %i[index create], controller: "data"
         end
       end
     end
