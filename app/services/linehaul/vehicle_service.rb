@@ -7,6 +7,7 @@ module Linehaul
     CONNECTION_TIMEOUT = 20
     TIMEOUT = 20
     LINEHAUL_BASE_URL = Rails.application.secrets.linehaul_base_url
+    FETCH_VEHICLE_URL = LINEHAUL_BASE_URL + "/api/v5/partner/vehicles"
     FETCH_VEHICLE_LITE_URL = LINEHAUL_BASE_URL + "/api/v5/partner/vehicles/lite"
     FETCH_VEHICLE_MOTION_URL = LINEHAUL_BASE_URL + "/api/v5/partner/vehicles?fetch_motion_status=true"
     FETCH_VEHICLE_SENSOR_URL = LINEHAUL_BASE_URL + "/api/v5/trucks/sensors/current_values"
@@ -17,6 +18,19 @@ module Linehaul
 
     def initialize(auth_token)
       self.auth_token = auth_token
+    end
+
+    def fetch_vehicle_details(vehicle_number, pagination)
+      response = Typhoeus::Request.new(
+        FETCH_VEHICLE_URL + "?&number=" + vehicle_number.to_s + "&page=" + pagination[:page].to_s + "&per_page=" + pagination[:per_page].to_s + "&fetch_with_metrics=false",
+        headers: {
+          "Authorization": auth_token,
+        },
+        timeout: TIMEOUT,
+        connecttimeout: CONNECTION_TIMEOUT,
+        method: :get,
+      ).run
+      respond(response, ActionFailed, ERROR_MSG_VEHICLE_LITE)
     end
 
     def fetch_vehicle_motion_details(vehicle_number)
@@ -65,7 +79,7 @@ module Linehaul
         timeout: TIMEOUT,
         connecttimeout: CONNECTION_TIMEOUT,
         method: :post,
-        ).run
+      ).run
       parse_response(response)
     end
 

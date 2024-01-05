@@ -19,7 +19,7 @@ module UtilHelper
     false
   end
 
-  private def build_pagination(params)
+  def build_pagination(params)
     {
       page: params[:page].to_i || 1,
       per_page: params[:per_page].to_i || 10,
