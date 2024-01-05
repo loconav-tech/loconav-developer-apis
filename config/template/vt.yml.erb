@@ -1,7 +1,0 @@
-<%
-  def app_config(*keys)
-    ENV[keys.join("_").upcase]&.strip
-  end
-%>
-
-loconav_video_telematics_url: <%= app_config('loconav','video','telematics','url') %>
