@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+
+  root to: 'welcome#index'
+
   namespace :api do
     namespace :v1 do
       resources :drivers, only: [:index]
@@ -22,13 +25,14 @@ Rails.application.routes.draw do
         end
       end
     end
-
-    # ERROR HANDLING
-    match "/404", to: "errors#not_found", via: :all
-    match "/500", to: "errors#internal_server_error", via: :all
-
-    # SWAGGER
-    mount Rswag::Ui::Engine => "/documentation", as: "rswag_ui"
-    mount Rswag::Api::Engine => "/documentation/api-docs", as: "rswag_api"
   end
+
+  # ERROR HANDLING
+  match "/404", to: "errors#not_found", via: :all
+  match "/500", to: "errors#internal_server_error", via: :all
+
+  # SWAGGER
+  mount Rswag::Ui::Engine => "/documentation", as: "rswag_ui"
+  mount Rswag::Api::Engine => "/documentation/api-docs", as: "rswag_api"
+
 end

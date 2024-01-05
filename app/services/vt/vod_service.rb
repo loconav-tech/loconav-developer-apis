@@ -24,13 +24,13 @@ module Vt
 
     def validate!
       check_params
+      handle_errors("400", "Invalid page request") if request_params["page"]&.to_i&.< 1
+      handle_errors("400", "Invalid page request") if request_params["perPage"]&.to_i&.< 1
     end
 
     def fetch!
       self.required_params = %i[]
       validate!
-      handle_errors("400", "Invalid page request") unless request_params["page"].to_i > 0
-      handle_errors("400", "Invalid page request") unless request_params["perPage"].to_i > 0
       return if errors.present?
       if current_account.present? && current_account["account"].present? && current_account["account"]["global_account_id"].present?
         request_params[:account_uuid] = current_account["account"]["global_account_id"]
