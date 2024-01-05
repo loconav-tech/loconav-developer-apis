@@ -1,6 +1,6 @@
 module Api
   module V1
-    class VehicleController < ApplicationController
+    class VehiclesController < ApplicationController
       include AuthenticationHelper,UtilHelper
 
       before_action :authenticate_account

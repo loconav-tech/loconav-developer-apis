@@ -4,7 +4,7 @@ Rails.application.routes.draw do
       post "vehicle/telematics/last_known", to: "vehicle_stats#last_known"
       post "vehicle/telematics/history", to: "vehicle_stats#history"
       resources :drivers, only: [:index]
-      resources :vehicle, only: [:index]
+      resources :vehicles, only: [:index]
       resources :throttler, only: [:index, :create] do
         collection do
           get ":auth_token", action: :get_by_auth_token
