@@ -20,7 +20,7 @@ module Linehaul
       self.auth_token = auth_token
     end
 
-    def fetch_vehicle_details(vehicle_number,pagination)
+    def fetch_vehicle_details(vehicle_number, pagination)
       response = Typhoeus::Request.new(
         FETCH_VEHICLE_URL + "?&number=" + vehicle_number.to_s + "&page=" + pagination[:page].to_s + "&per_page=" + pagination[:per_page].to_s + "&fetch_with_metrics=false",
         headers: {
@@ -29,8 +29,8 @@ module Linehaul
         timeout: TIMEOUT,
         connecttimeout: CONNECTION_TIMEOUT,
         method: :get,
-        ).run
-      respond(response,ActionFailed,ERROR_MSG_VEHICLE_LITE)
+      ).run
+      respond(response, ActionFailed, ERROR_MSG_VEHICLE_LITE)
     end
 
     def fetch_vehicle_motion_details(vehicle_number)
@@ -79,7 +79,7 @@ module Linehaul
         timeout: TIMEOUT,
         connecttimeout: CONNECTION_TIMEOUT,
         method: :post,
-        ).run
+      ).run
       parse_response(response)
     end
 

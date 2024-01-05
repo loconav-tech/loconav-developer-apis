@@ -4,7 +4,7 @@ module Vehicle
     QUERY_PARAMS = :vehicle_number
     attr_accessor :vehicle_number, :pagination, :error_code, :errors, :account
 
-    def initialize(account,vehicle_number,pagination)
+    def initialize(account, vehicle_number, pagination)
       self.vehicle_number = vehicle_number
       self.errors = []
       self.pagination = pagination
@@ -16,7 +16,7 @@ module Vehicle
     end
 
     def fetch_details
-      response = Linehaul::VehicleService.new(account["authentication_token"]).fetch_vehicle_details(vehicle_number,pagination)
+      response = Linehaul::VehicleService.new(account["authentication_token"]).fetch_vehicle_details(vehicle_number, pagination)
       if response &&
         response["success"].present? &&
         response["success"] == true
@@ -30,7 +30,7 @@ module Vehicle
 
     def format_response(response)
       response["data"]["vehicles"].each do |vehicle|
-        vehicle.delete_if { |_key, value| value.nil? || value == "N/A" || value == "" || value == "-"}
+        vehicle.delete_if { |_key, value| value.nil? || value == "N/A" || value == "" || value == "-" }
       end
     end
 

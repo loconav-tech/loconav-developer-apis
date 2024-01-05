@@ -1,14 +1,14 @@
 module Api
   module V1
     class VehiclesController < ApplicationController
-      include AuthenticationHelper,UtilHelper
+      include AuthenticationHelper, UtilHelper
 
       before_action :authenticate_account
 
       def index
         request_params = params.permit(::Vehicle::QueryService::QUERY_PARAMS)
         pagination = build_pagination
-        service = ::Vehicle::QueryService.new(current_account,request_params[:vehicle_number],pagination)
+        service = ::Vehicle::QueryService.new(current_account, request_params[:vehicle_number], pagination)
         vehicles = service.run!
         status_code = to_status(service)
         response = if service.errors.any?
