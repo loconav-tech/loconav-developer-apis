@@ -49,6 +49,23 @@ module Linehaul
       parse_response(response)
     end
 
+    def update_driver(params)
+      response = Typhoeus::Request.new(
+        DRIVER_URL + "/update",
+        headers: {
+          Authorization: auth_token,
+          "X-Linehaul-V5-Secret": V5_API_ACCESS_TOKEN,
+          "User-Type": "User",
+          "Content-Type": "application/json"
+        },
+        body: build_request_body(params).to_json,
+        timeout: TIMEOUT,
+        connecttimeout: CONNECTION_TIMEOUT,
+        method: :put,
+        ).run
+      parse_response(response)
+    end
+
     def build_request_body(params)
       {
         "drivers": params[:drivers]
