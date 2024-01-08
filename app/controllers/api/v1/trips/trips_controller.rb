@@ -9,7 +9,7 @@ module Api
 
         def index
           request_params = params.permit(::Trips::TripService::FETCH_TRIP_PARAMS)
-          service = ::Trips::TripService.new(@current_account, request_params)
+          service = ::Trips::TripService.new(current_account, request_params)
           response = service.fetch_trips
           status_code = to_status(service)
           response = if service.errors.present?
