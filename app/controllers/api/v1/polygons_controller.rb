@@ -6,7 +6,7 @@ module Api
       before_action :authenticate_account
 
       def index
-        pagination = build_pagination
+        pagination = build_pagination(params)
         service = Polygon::QueryService.new(current_account, pagination, params)
         polygons = service.run!
         status_code = to_status(service)
@@ -53,13 +53,6 @@ module Api
                      Loconav::Response::Builder.success(values: polygon)
                    end
         render json: response, status: status_code
-      end
-
-      private def build_pagination
-        {
-          page: params[:page].present? ? params[:page].to_i : 1,
-          per_page: params[:per_page].present? ? params[:per_page].to_i : 10,
-        }
       end
 
       private def to_status(service)

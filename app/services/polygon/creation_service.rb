@@ -19,12 +19,17 @@ module Polygon
 
     def validate_params
       check_missing_params
+      validate_distance_unit if errors.empty?
     end
 
     def check_missing_params
       REQUIRED_PARAMS.each do |key|
         handle_errors("#{key} is missing") unless params[key].present?
       end
+    end
+
+    def validate_distance_unit
+      handle_errors("distance unit should be in meters[m]") if params["distance_unit"].present? && params["distance_unit"] != "m"
     end
 
     def create_polygon
@@ -46,6 +51,9 @@ module Polygon
         errors << error_response
         self.error_code = :parameter_is_missing
       when /is invalid/
+        errors << error_response
+        self.error_code = :parameter_is_invalid
+      when "distance unit should be in meters[m]"
         errors << error_response
         self.error_code = :parameter_is_invalid
       when "Technical issue"

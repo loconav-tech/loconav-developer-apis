@@ -21,8 +21,8 @@ module UtilHelper
 
   def build_pagination(params)
     {
-      page: params[:page].to_i || 1,
-      per_page: params[:per_page].to_i || 10,
+      page: params[:page].present? ? params[:page].to_i : 1,
+      per_page: params[:per_page].present? ? params[:per_page].to_i : 10,
     }
   end
 end

@@ -25,7 +25,7 @@ module Polygon
         response["pagination"] = pagination
         response
       else
-        handle_errors("Techincal_issue")
+        handle_errors("Technical issue")
       end
     end
 
