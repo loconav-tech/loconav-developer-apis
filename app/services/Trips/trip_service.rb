@@ -1,22 +1,23 @@
 module Trips
   class TripService
+    include UtilHelper
 
-    attr_accessor :current_account, :params, :status_code, :errors, :pagination
+    attr_accessor :account, :params, :status_code, :errors, :pagination
 
     FETCH_TRIP_PARAMS = %i[unique_id start_time end_time states driver_id vehicle_id vehicle_number sort_column page perPage] + [filters: {}]
 
     def initialize(current_account, params)
-      self.current_account = current_account
+      self.account = current_account
       self.pagination = pagination
       self.params = params
-      self.pagination = nil
       self.errors = []
     end
 
     def fetch_trips
       return unless errors.empty?
       @params[:filters] = format_params
-      success, response = Linehaul::TripService.new(@current_account["authentication_token"]).fetch_trips(params)
+      params = get_indices(@params)
+      success, response = Linehaul::TripService.new(@account["authentication_token"]).fetch_trips(params)
       if success
         @status_code = "success"
         @pagination = { page: params["page"].to_i,
@@ -54,9 +55,6 @@ module Trips
       when /Data not found/
         self.status_code = :not_found
         errors << "Data not found Error: #{error_message}"
-      when 308
-        self.status_code = :technical_issue
-        errors << "Technical issue, please try again later"
       else
         self.status_code = :unprocessable_entity
         errors << (error_message.presence || "Unable to process request")
