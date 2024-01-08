@@ -13,7 +13,12 @@ module Polygon
     end
 
     def run!
-      update_polygon
+      validate_distance_unit
+      update_polygon if errors.empty?
+    end
+
+    def validate_distance_unit
+      handle_errors("distance unit should be in meters[m]") if params["distance_unit"].present? && params["distance_unit"] != "m"
     end
 
     def update_polygon
@@ -24,7 +29,7 @@ module Polygon
       if success && response.present? && response["polygon"].present?
         response["polygon"]
       else
-        handle_errors("Technical issue, please try again later")
+        handle_errors("Technical issue")
       end
 
     end
@@ -32,6 +37,9 @@ module Polygon
     private def handle_errors(error_response)
       case error_response
       when /is invalid/
+        errors << error_response
+        self.error_code = :parameter_is_invalid
+      when "distance unit should be in meters[m]"
         errors << error_response
         self.error_code = :parameter_is_invalid
       when "Technical issue"

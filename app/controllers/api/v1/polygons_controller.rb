@@ -55,13 +55,6 @@ module Api
         render json: response, status: status_code
       end
 
-      private def build_pagination
-        {
-          page: params[:page].present? ? params[:page].to_i : 1,
-          per_page: params[:per_page].present? ? params[:per_page].to_i : 10,
-        }
-      end
-
       private def to_status(service)
         if service.error_code
           if service.error_code.in?(%i[invalid_pagination_request active_should_be_boolean_type parameter_is_missing parameter_is_invalid])

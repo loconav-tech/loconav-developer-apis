@@ -16,13 +16,13 @@ module Linehaul
     end
 
     def fetch_polygon_details(pagination, name, active)
-      start_index = pagination[:page] * pagination[:per_page]
-      end_index = (pagination[:page] + 1) * pagination[:per_page]
+      start_index = (pagination[:page] * pagination[:per_page]).to_i
+      end_index = ((pagination[:page] + 1) * pagination[:per_page]).to_i
       response = Typhoeus::Request.new(
         FETCH_POLYGONS_URL + "?start_index=" + start_index.to_s + "&end_index=" + end_index.to_s + "&filter=" + name.to_s + "&active=" + active.to_s,
         headers: {
           "Authorization": auth_token,
-          "X-Linehaul-V2-Secret": V2_API_ACCESS_TOKEN
+          "X-Linehaul-V2-Secret": V2_API_ACCESS_TOKEN,
         },
         timeout: TIMEOUT,
         connecttimeout: CONNECTION_TIMEOUT,
@@ -36,8 +36,8 @@ module Linehaul
         POLYGON_URL,
         headers: {
           "X-Linehaul-V2-Secret": V2_API_ACCESS_TOKEN,
-          Authorization: auth_token,
-          "Content-Type": "application/json"
+          "Authorization": auth_token,
+          "Content-Type": "application/json",
         },
         body: build_request_body(params).to_json,
         timeout: TIMEOUT,
@@ -52,8 +52,8 @@ module Linehaul
         POLYGON_URL + "/" + polygon_id,
         headers: {
           "X-Linehaul-V2-Secret": V2_API_ACCESS_TOKEN,
-          Authorization: auth_token,
-          "Content-Type": "application/json"
+          "Authorization": auth_token,
+          "Content-Type": "application/json",
         },
         body: build_request_body(params).to_json,
         timeout: TIMEOUT,
