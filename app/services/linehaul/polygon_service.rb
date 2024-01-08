@@ -16,8 +16,8 @@ module Linehaul
     end
 
     def fetch_polygon_details(pagination, name, active)
-      start_index = (pagination[:page] * pagination[:per_page]).to_i
-      end_index = ((pagination[:page] + 1) * pagination[:per_page]).to_i
+      start_index = ((pagination[:page]-1) * pagination[:per_page]).to_i
+      end_index = (pagination[:page] * pagination[:per_page]).to_i
       response = Typhoeus::Request.new(
         FETCH_POLYGONS_URL + "?start_index=" + start_index.to_s + "&end_index=" + end_index.to_s + "&filter=" + name.to_s + "&active=" + active.to_s,
         headers: {

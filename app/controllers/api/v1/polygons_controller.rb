@@ -6,7 +6,7 @@ module Api
       before_action :authenticate_account
 
       def index
-        pagination = build_pagination
+        pagination = build_pagination(params)
         service = Polygon::QueryService.new(current_account, pagination, params)
         polygons = service.run!
         status_code = to_status(service)
