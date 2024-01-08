@@ -1,0 +1,95 @@
+module Linehaul
+  class TripService
+
+    class ActionFailed < StandardError; end
+
+    include ResponseHelper
+
+    CONNECTION_TIMEOUT = 20
+    TIMEOUT = 20
+    LINEHAUL_BASE_URL = Rails.application.secrets.linehaul_base_url
+    TRIP_URL = "/api/v5/trips"
+
+    attr_accessor :auth_token
+
+    def initialize(auth_token)
+      self.auth_token = auth_token
+    end
+
+    def fetch_trips(params)
+      response = Typhoeus::Request.new(
+        LINEHAUL_BASE_URL + TRIP_URL,
+        params: params.to_param,
+        headers: {
+          "Authorization": auth_token,
+        },
+        timeout: TIMEOUT,
+        connecttimeout: CONNECTION_TIMEOUT,
+        method: :get,
+      ).run
+      parse_response(response)
+    end
+
+    def create_trip(params)
+      response = Typhoeus::Request.new(
+        LINEHAUL_BASE_URL + TRIP_URL,
+        headers: {
+          "Authorization": auth_token,
+          "Content-Type": "application/json",
+        },
+        body: params.to_json,
+        timeout: TIMEOUT,
+        connecttimeout: CONNECTION_TIMEOUT,
+        method: :post,
+      ).run
+      parse_response(response)
+    end
+
+    def update_trip(params)
+      response = Typhoeus::Request.new(
+        LINEHAUL_BASE_URL + TRIP_URL + "/#{params[:id]}",
+        headers: {
+          "Authorization": auth_token,
+          "Content-Type": "application/json",
+        },
+        body: params.to_json,
+        timeout: TIMEOUT,
+        connecttimeout: CONNECTION_TIMEOUT,
+        method: :put,
+      ).run
+      parse_response(response)
+    end
+
+    def delete_trip(params)
+      response = Typhoeus::Request.new(
+        LINEHAUL_BASE_URL + TRIP_URL + "/#{params[:id]}",
+        params: params.to_param,
+        headers: {
+          "Authorization": auth_token,
+        },
+        timeout: TIMEOUT,
+        connecttimeout: CONNECTION_TIMEOUT,
+        method: :delete,
+      ).run
+      parse_response(response)
+    end
+
+    private def parse_response(response)
+      if response && response.body.present?
+        if response.success?
+          response_data = JSON.parse(response.body)
+          [true, response_data]
+        elsif response.response_code == 400
+          [false, response.body]
+        elsif response.response_code == 500
+          [false, "Technical issue"]
+        else
+          response_data = JSON.parse(response.body)
+          [response_data["success"], response_data["errors"]]
+        end
+      else
+        [false, "Technical issue"]
+      end
+    end
+  end
+end
