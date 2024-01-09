@@ -26,7 +26,7 @@ module Linehaul
         timeout: TIMEOUT,
         connecttimeout: CONNECTION_TIMEOUT,
         method: :post,
-        ).run
+      ).run
       parse_response(response)
     end
 

@@ -1,13 +1,13 @@
 module Api
   module V1
     class EvMobilizeController < ApplicationController
-      include AuthenticationHelper,UtilHelper
+      include AuthenticationHelper, UtilHelper
 
       before_action :authenticate_account
 
       def create
         request_params = params.permit(Mobilization::CreationService::QUERY_PARAMS)
-        service = Mobilization::CreationService.new(request_params,current_account)
+        service = Mobilization::CreationService.new(request_params, current_account)
         mobilize = service.run!
         status_code = to_status(service)
         response = if service.errors.any?
