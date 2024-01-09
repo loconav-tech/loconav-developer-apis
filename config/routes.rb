@@ -15,6 +15,7 @@ Rails.application.routes.draw do
       end
       resources :polygons, only: [:index,:create,:update]
       resources :vehicles, only: [:index]
+      resources :ev_mobilize, only: [:create]
       resources :throttler, only: [:index, :create] do
         collection do
           get ":auth_token", action: :get_by_auth_token
